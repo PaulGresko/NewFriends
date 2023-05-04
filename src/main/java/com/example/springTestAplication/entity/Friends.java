@@ -1,0 +1,28 @@
+package com.example.springTestAplication.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@Table(name = "friends")
+public class Friends {
+
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "friend1",referencedColumnName = "login")
+    private UserData friend1;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "friend2",referencedColumnName = "login")
+    private UserData friend2;
+
+    @Column(name = "status")
+    private String status;
+}
