@@ -8,6 +8,7 @@ import com.example.springTestAplication.security.JWTUtil;
 import com.example.springTestAplication.services.RegistrationService;
 import com.example.springTestAplication.services.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -42,6 +44,7 @@ public class AuthController {
 
     @GetMapping("/registration")
     public String registrationPage(@ModelAttribute("user") User user){ // todo Поменять на DTO
+
         return "auth/registration";
     }
     @PostMapping("/registration")
@@ -60,6 +63,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public Map<String,String> performLogin(@RequestBody AuthDTO authDTO){
+        
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDTO.getLogin(),authDTO.getPassword()));
         if(authentication.isAuthenticated()){
             return Map.of("JWT", jwtUtil.generateToken(authDTO.getLogin()));

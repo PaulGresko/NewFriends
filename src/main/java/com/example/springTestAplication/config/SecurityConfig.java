@@ -20,16 +20,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     private final UserServiceImpl userService;
     private final JWTFilter jwtFilter;
 
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("*")
+                .allowedOrigins("http://localhost:4444")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(-1);
+    }
 
     @Autowired
     public SecurityConfig(UserServiceImpl userService, JWTFilter jwtFilter) {
@@ -65,10 +76,9 @@ public class SecurityConfig {
                 .requestMatchers("/auth/admin").hasRole("ADMIN")
                 .requestMatchers("/auth/login", "/auth/registration", "/error").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/auth/login")
+//                .and().logout()
+////                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutUrl("/logout")
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
