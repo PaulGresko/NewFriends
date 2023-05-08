@@ -60,6 +60,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User findUserByLogin(String login) {
+        return userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + "not found"));
+    }
+
+
+    @Override
     @Transactional
     public AuthDTO update(String login, AuthDTO authDTO) {
         User user = userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + "not found"));

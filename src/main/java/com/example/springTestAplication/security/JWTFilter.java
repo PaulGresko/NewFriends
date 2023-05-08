@@ -1,6 +1,6 @@
 package com.example.springTestAplication.security;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
