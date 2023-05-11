@@ -1,7 +1,7 @@
 package com.example.NewFriends.services;
 
 
-import com.example.NewFriends.dto.user.AuthDTO;
+import com.example.NewFriends.dto.Authentication.AuthDTO;
 import com.example.NewFriends.entity.User;
 
 import java.util.List;

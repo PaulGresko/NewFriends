@@ -19,10 +19,15 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JWTUtil {
+public class JWTService {
 
     @Value("${jwt_secret}")
     private String secret;
+    @Value("${jwt_expiration}")
+    private long jwtExpiration;
+
+    @Value("${refresh-token_expiration}")
+    private long refreshTokenExpiration;
 
 
     public String extractLogin(String token){
@@ -49,24 +54,25 @@ public class JWTUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractLogin(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
 
-    public String generateToken(String userName, String authorities){
-        Map<String,Object> claims=new HashMap<>();
-        claims.put("Authorities", authorities);
-        return createToken(claims,userName);
+    public String generateJWT(UserDetails user){
+        return createToken(new HashMap<>(), user.getUsername(),jwtExpiration);
+    }
+    public String generateRefreshToken(UserDetails user){
+        return createToken(new HashMap<>(), user.getUsername(), refreshTokenExpiration);
     }
 
-    private String createToken(Map<String, Object> claims, String userName) {
+    private String createToken(Map<String, Object> claims, String userName,long expiration) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 1000 * 15 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -74,6 +80,4 @@ public class JWTUtil {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
-
 }

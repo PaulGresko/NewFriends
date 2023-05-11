@@ -1,8 +1,8 @@
 package com.example.NewFriends.services.mapper;
 
 
-import com.example.NewFriends.dto.user.AuthDTO;
-import com.example.NewFriends.dto.user.RegistrationDTO;
+import com.example.NewFriends.dto.Authentication.AuthDTO;
+import com.example.NewFriends.dto.Authentication.RegistrationDTO;
 import com.example.NewFriends.entity.User;
 import org.springframework.stereotype.Component;
 

@@ -14,10 +14,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -28,6 +30,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     private final UserServiceImpl userService;
     private final JWTFilter jwtFilter;
+    private final LogoutHandler logoutHandler;
 
 
     @Override
@@ -41,10 +44,11 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Autowired
-    public SecurityConfig(UserServiceImpl userService, JWTFilter jwtFilter) {
+    public SecurityConfig(UserServiceImpl userService, JWTFilter jwtFilter, LogoutHandler logoutHandler) {
         this.userService = userService;
         this.jwtFilter = jwtFilter;
 
+        this.logoutHandler = logoutHandler;
     }
 
 
@@ -72,14 +76,16 @@ public class SecurityConfig implements WebMvcConfigurer {
         http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/auth/admin").hasRole("ADMIN")
-                .requestMatchers("/auth/login", "/auth/registration", "/error").permitAll()
+                .requestMatchers("/auth/login", "/auth", "/auth/registration", "/error").permitAll()
                 .anyRequest().authenticated()
-//                .and().logout()
-////                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                .logoutUrl("/logout")
+                .and().logout()
+//                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutUrl("/auth/logout")
+                .addLogoutHandler(logoutHandler)
+                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

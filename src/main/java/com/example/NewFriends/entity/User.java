@@ -4,32 +4,28 @@ package com.example.NewFriends.entity;
 
 import com.example.NewFriends.enums.Status;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import java.util.Collection;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "user")
 public class User implements UserDetails {
     @Id
     @Column
-    @NotEmpty(message = "login should not be empty")
-    @Size(min = 1, max = 30, message = "Login should be between 1 and 30 character")
-    @Email
     private String login;
     @Column
-    @NotEmpty(message = "Password should not be empty")
-//    @Size(min = 1, max = 30, message = "Password should be between 1 and 30 character")
     private String password;
 
     @Column
@@ -37,8 +33,11 @@ public class User implements UserDetails {
     private Status status;
 
     @ToString.Exclude
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user")
     private UserData userData;
+
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

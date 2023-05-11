@@ -1,4 +1,4 @@
-package com.example.NewFriends.dto.user;
+package com.example.NewFriends.dto.Authentication;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

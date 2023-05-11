@@ -1,7 +1,7 @@
 package com.example.NewFriends.services.impl;
 
 
-import com.example.NewFriends.dto.user.AuthDTO;
+import com.example.NewFriends.dto.Authentication.AuthDTO;
 import com.example.NewFriends.entity.User;
 import com.example.NewFriends.enums.Status;
 import com.example.NewFriends.repositories.UserRepository;
@@ -63,7 +63,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User findUserByLogin(String login) {
         return userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + "not found"));
     }
-
 
     @Override
     @Transactional

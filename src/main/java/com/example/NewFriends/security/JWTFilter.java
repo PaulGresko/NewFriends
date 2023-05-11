@@ -1,10 +1,13 @@
 package com.example.NewFriends.security;
 
 
+
+import com.example.NewFriends.repositories.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,12 +21,16 @@ import java.io.IOException;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
-    private final JWTUtil jwtUtil;
-    private final UserDetailsService userService; //Может быть ошибка здесь
 
-    public JWTFilter(JWTUtil jwtUtil,UserDetailsService usersService) {
-        this.jwtUtil = jwtUtil;
+    private final JWTService jwtService;
+    private final UserDetailsService userService;
+    private final TokenRepository tokenRepository;
+
+    @Autowired
+    public JWTFilter(JWTService jwtService, UserDetailsService usersService, TokenRepository tokenRepository) {
+        this.jwtService = jwtService;
         this.userService = usersService;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -33,12 +40,16 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
-                username = jwtUtil.extractLogin(token);
+                username = jwtService.extractLogin(token);
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(token, userDetails)) {
+
+            boolean isTokenValid = tokenRepository.findByToken(token)
+                    .map(t-> !t.isExpired()).orElse(false);
+
+            if (jwtService.isTokenValid(token, userDetails) && isTokenValid) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

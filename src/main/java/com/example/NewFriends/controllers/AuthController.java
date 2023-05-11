@@ -1,62 +1,38 @@
 package com.example.NewFriends.controllers;
 
 
-import com.example.NewFriends.dto.user.AuthDTO;
-import com.example.NewFriends.dto.user.RegistrationDTO;
+import com.example.NewFriends.dto.Authentication.AuthDTO;
+import com.example.NewFriends.dto.Authentication.RegistrationDTO;
+import com.example.NewFriends.dto.Authentication.TokensDTO;
 import com.example.NewFriends.entity.User;
-import com.example.NewFriends.enums.Status;
-import com.example.NewFriends.security.JWTUtil;
-import com.example.NewFriends.services.RegistrationService;
-import com.example.NewFriends.services.UserService;
-import com.example.NewFriends.services.mapper.UserMapper;
+import com.example.NewFriends.services.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
 @RestController
-@CrossOrigin(maxAge = 3600)
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final RegistrationService registrationService;
-    private final JWTUtil jwtUtil;
-    private final UserMapper userMapper;
-    private final AuthenticationManager authenticationManager;
-    private final UserService userService;
+
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public AuthController(RegistrationService registrationService, JWTUtil jwtUtil, UserMapper userMapper, AuthenticationManager authenticationManager, UserService userService) {
-        this.registrationService = registrationService;
-        this.jwtUtil = jwtUtil;
-        this.userMapper = userMapper;
-        this.authenticationManager = authenticationManager;
-        this.userService = userService;
+    public AuthController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
-    //    @GetMapping(value = "/login")
-//    public String loginPage(){
-//        return "auth/login";
-//    }
 
-    @GetMapping("/registration")
-    public String registrationPage(@ModelAttribute("user") User user){ // todo Поменять на DTO
-
-        return "auth/registration";
-    }
     @PostMapping("/registration")
-    public Map<String, String> performRegistration(@RequestBody RegistrationDTO reg){
-
-        User user = userMapper.fromDto(reg);
-
-        registrationService.register(user);
-        return Map.of("jwt-token", jwtUtil.generateToken(reg.getLogin(), Status.ROLE_NEW.toString()));
+    public ResponseEntity<TokensDTO> register(@RequestBody RegistrationDTO reg){
+        return ResponseEntity.ok(authenticationService.register(reg));
     }
 
     @GetMapping("/admin")
@@ -65,29 +41,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String,String> performLogin(@RequestBody AuthDTO authDTO){
-
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDTO.getLogin(),authDTO.getPassword()));
-        User user = userService.findUserByLogin(authDTO.getLogin());
-
-
-        if(authentication.isAuthenticated()){
-            Map<String,String> map = new HashMap<>();
-            map.put("JWT", jwtUtil.generateToken(authDTO.getLogin(), user.getStatus().toString()));
-            map.put("Authorities",user.getStatus().toString());
-            return map;
-        }
-        else{
-            return Map.of("message", "Incorrect credentials!");
-        }
+    public ResponseEntity<TokensDTO> performLogin(@RequestBody AuthDTO authDTO){
+        return ResponseEntity.ok(authenticationService.authenticate(authDTO));
     }
+
+    @GetMapping("/login")
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        authenticationService.refreshToken(request,response);
+    }
+
 
     @GetMapping("/showUserInfo")
     @ResponseBody
     public String showUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (User)authentication.getPrincipal();
-
         return userDetails.getAuthorities().stream().toString() + "\n" + userDetails.getUsername() + "\n" + userDetails.getPassword();
     }
 }

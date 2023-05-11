@@ -81,8 +81,4 @@ public class UserData {
         allFriends.addAll(friends2);
         return allFriends;
     }
-
-//    @ToString.Exclude
-//    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-//    private Set<UserData> friends = new HashSet<>();
 }
