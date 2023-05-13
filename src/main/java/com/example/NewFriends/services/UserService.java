@@ -13,6 +13,6 @@ public interface UserService {
 
     User findUserByLogin(String login);
 
-    AuthDTO update(String login, AuthDTO authDTO);
+    AuthDTO update(String login, User user);
     String delete(String login);
 }

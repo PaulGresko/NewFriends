@@ -1,7 +1,6 @@
 package com.example.NewFriends.services.impl;
 
 
-import com.example.NewFriends.dto.userData.UserDataCreateDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
 import com.example.NewFriends.entity.UserData;
 import com.example.NewFriends.repositories.UserDataRepository;
@@ -46,7 +45,7 @@ public class UserDataServiceImpl implements UserDataService {
     }
 
     @Override
-    public UserDataDTO save(UserDataCreateDTO userDataDTO) {
+    public UserDataDTO save(UserDataDTO userDataDTO) {
         UserData userData = new UserData();
         userData.setLogin(userDataDTO.getLogin());
         userData.setName(userDataDTO.getName());
@@ -58,6 +57,23 @@ public class UserDataServiceImpl implements UserDataService {
         userData.setSex(userDataDTO.getSex());
         userData.setUser(userRepository.findById(userDataDTO.getLogin()).orElseThrow(()->new NoSuchElementException("User not found")));
         return  userDataMapper.toDto(userDataRepository.save(userData));
+    }
+
+    @Override
+    public UserDataDTO update(String login, UserDataDTO userDataDTO) {
+        UserData userData = UserData.builder()
+                .user(userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User not found")))
+                .birthday(userDataDTO.getBirthday())
+                .name(userDataDTO.getName())
+                .city(userDataDTO.getCity())
+                .image(userDataDTO.getImage())
+                .description(userDataDTO.getDescription())
+                .sex(userDataDTO.getSex())
+                .zodiacSign(userDataDTO.getSex())
+                .login(login)
+                .build();
+
+        return userDataMapper.toDto(userDataRepository.save(userData));
     }
 
     @Override

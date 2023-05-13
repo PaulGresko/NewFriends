@@ -33,13 +33,18 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 
     @Override
+    public Complaint findById(Long id) {
+        return complaintRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Complaint not found"));
+    }
+
+    @Override
     public List<ComplaintDTO> findAll() {
         return complaintMapper.toDtoList(complaintRepository.findAll());
     }
 
     @Override
     public List<ComplaintDTO> findBySender(String login) {
-        UserData user = userDataRepository.findById(login).orElseThrow(()-> new NoSuchElementException("Message`s sender not found"));
+        UserData user = userDataRepository.findById(login).orElseThrow(()-> new NoSuchElementException("Complaint`s sender not found"));
         return complaintMapper.toDtoList(complaintRepository.findAllBySender(user));
     }
 
@@ -63,9 +68,11 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     @Transactional
-    public ComplaintDTO update(Long id, ComplaintCreateDTO complaintDTO) {
+    public ComplaintDTO update(Long id, Complaint Complaint) {
+
         Complaint complaint = complaintRepository.findById(id).orElseThrow(()-> new NoSuchElementException("Complaint not found"));
-        complaint.setText(complaintDTO.getText());
+        complaint.setText(complaint.getText());
+        complaint.setChecked(Complaint.isChecked());
         return complaintMapper.toDto(complaintRepository.save(complaint));
     }
 

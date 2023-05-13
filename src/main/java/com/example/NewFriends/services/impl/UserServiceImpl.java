@@ -66,12 +66,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public AuthDTO update(String login, AuthDTO authDTO) {
+    public AuthDTO update(String login, User updatedUser) {
         User user = userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + "not found"));
-        user.setLogin(authDTO.getLogin());
-        user.setPassword(authDTO.getPassword());
-        user.setStatus(Status.valueOf(authDTO.getStatus()));
-        return userMapper.toDto(userRepository.saveAndFlush(user));
+        user.setLogin(updatedUser.getLogin());
+        user.setPassword(updatedUser.getPassword());
+        user.setStatus(updatedUser.getStatus());
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override

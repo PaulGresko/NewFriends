@@ -39,7 +39,7 @@ public class UserController {
         return userDataService.findAll();
     }
 
-    @GetMapping("/{login}")
+    @GetMapping("users/{login}")
     public AuthDTO show(@PathVariable("login") String login){
 
         return usersService.findByLogin(login);

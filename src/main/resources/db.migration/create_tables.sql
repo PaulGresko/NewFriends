@@ -31,6 +31,7 @@ create table complaint(
     sender VARCHAR(30),
     victim VARCHAR(30),
     text VARCHAR(200),
+    checked boolean,
     FOREIGN KEY (sender) REFERENCES user_data(login) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (victim) REFERENCES user_data(login) ON DELETE CASCADE ON UPDATE CASCADE
 );

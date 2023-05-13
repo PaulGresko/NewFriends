@@ -40,6 +40,7 @@ public class Message {
     @Column(name = "text")
     private String text;
 
+
     public Message(UserData sender, UserData recipient, String text) {
         this.date = new Date();
         this.time = new Date();

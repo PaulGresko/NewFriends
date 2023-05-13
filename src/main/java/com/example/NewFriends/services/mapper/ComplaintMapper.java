@@ -16,7 +16,8 @@ public class ComplaintMapper {
                 complaint.getTime(),
                 complaint.getSender().getLogin(),
                 complaint.getVictim().getLogin(),
-                complaint.getText());
+                complaint.getText(),
+                complaint.isChecked());
     }
     public List<ComplaintDTO> toDtoList(List<Complaint> complaints){
         return complaints.stream().map(this::toDto).collect(Collectors.toList());
