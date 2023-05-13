@@ -3,7 +3,7 @@ package com.example.NewFriends.controllers;
 
 import com.example.NewFriends.dto.Authentication.AuthDTO;
 import com.example.NewFriends.dto.Authentication.RegistrationDTO;
-import com.example.NewFriends.dto.Authentication.TokensDTO;
+import com.example.NewFriends.dto.Authentication.AuthenticateDTO;
 import com.example.NewFriends.entity.User;
 import com.example.NewFriends.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ public class AuthController {
 
 
     @PostMapping("/registration")
-    public ResponseEntity<TokensDTO> register(@RequestBody RegistrationDTO reg){
+    public ResponseEntity<AuthenticateDTO> register(@RequestBody RegistrationDTO reg){
         return ResponseEntity.ok(authenticationService.register(reg));
     }
 
@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokensDTO> performLogin(@RequestBody AuthDTO authDTO){
+    public ResponseEntity<AuthenticateDTO> performLogin(@RequestBody AuthDTO authDTO){
         return ResponseEntity.ok(authenticationService.authenticate(authDTO));
     }
 

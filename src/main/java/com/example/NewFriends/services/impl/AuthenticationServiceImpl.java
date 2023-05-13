@@ -2,7 +2,7 @@ package com.example.NewFriends.services.impl;
 
 import com.example.NewFriends.dto.Authentication.AuthDTO;
 import com.example.NewFriends.dto.Authentication.RegistrationDTO;
-import com.example.NewFriends.dto.Authentication.TokensDTO;
+import com.example.NewFriends.dto.Authentication.AuthenticateDTO;
 import com.example.NewFriends.entity.Token;
 import com.example.NewFriends.entity.User;
 import com.example.NewFriends.enums.Status;
@@ -43,7 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public TokensDTO register(RegistrationDTO registration) {
+    public AuthenticateDTO register(RegistrationDTO registration) {
         User user = User.builder()
                 .login(registration.getLogin())
                 .password(passwordEncoder.encode(registration.getPassword()))
@@ -53,11 +53,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwt = jwtService.generateJWT(savedUser);
         String refreshToken = jwtService.generateRefreshToken(savedUser);
         saveUserToken(savedUser, jwt);
-        return new TokensDTO(jwt, refreshToken);
+        return new AuthenticateDTO(jwt, refreshToken,savedUser.getLogin(),savedUser.getStatus().toString());
     }
 
     @Override
-    public TokensDTO authenticate(AuthDTO auth) {
+    public AuthenticateDTO authenticate(AuthDTO auth) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     auth.getLogin(),
@@ -68,7 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user,jwt);
-        return new TokensDTO(jwt, refreshToken);
+        return new AuthenticateDTO(jwt, refreshToken, user.getLogin(), user.getStatus().toString());
     }
 
     @Override
@@ -109,7 +109,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 String jwt = jwtService.generateJWT(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user,jwt);
-                new ObjectMapper().writeValue(response.getOutputStream(), new TokensDTO(jwt,refreshToken));
+                new ObjectMapper().writeValue(response.getOutputStream(),
+                        new AuthenticateDTO(jwt,refreshToken,user.getLogin(),user.getStatus().toString()));
             }
         }
     }
