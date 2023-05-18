@@ -11,6 +11,7 @@ import com.example.NewFriends.repositories.UserRepository;
 import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.AuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticateDTO authenticate(AuthDTO auth) {
+    public AuthenticateDTO authenticate(AuthDTO auth, HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     auth.getLogin(),
@@ -68,6 +69,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user,jwt);
+//        Cookie cookie = new Cookie("access-token",jwt);
+//        response.addCookie(cookie);
+//        cookie = new Cookie("refresh-token",refreshToken);
+//        response.addCookie(cookie);
+
         return new AuthenticateDTO(jwt, refreshToken, user.getLogin(), user.getStatus().toString());
     }
 

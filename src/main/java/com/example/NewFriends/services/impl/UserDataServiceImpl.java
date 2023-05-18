@@ -1,7 +1,9 @@
 package com.example.NewFriends.services.impl;
 
 
+import com.example.NewFriends.dto.userData.CategoryDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
+import com.example.NewFriends.entity.User;
 import com.example.NewFriends.entity.UserData;
 import com.example.NewFriends.repositories.UserDataRepository;
 import com.example.NewFriends.repositories.UserRepository;
@@ -40,8 +42,17 @@ public class UserDataServiceImpl implements UserDataService {
     }
 
     @Override
-    public List<UserDataDTO> findByCategory(String description, String sex, String zodiacSign, String city) {
-        return userDataMapper.toDtoList(userDataRepository.findByDescriptionLikeAndSexAndZodiacSignAndCity(description,sex,zodiacSign,city));
+    public List<UserDataDTO> findByCategory(CategoryDTO DTO) {
+        List<UserData> users;
+        users =  userDataRepository.findByCategory(
+                DTO.getDescription(),
+                DTO.getSex(),
+                DTO.getZodiacSign(),
+                DTO.getCity(),
+                DTO.getAge1(),
+                DTO.getAge2());
+//        String description, String sex, String zodiacSign, String city, Integer age1, Integer age2
+        return userDataMapper.toDtoList(users);
     }
 
     @Override
@@ -56,7 +67,8 @@ public class UserDataServiceImpl implements UserDataService {
         userData.setZodiacSign(userDataDTO.getZodiacSign());
         userData.setSex(userDataDTO.getSex());
         userData.setUser(userRepository.findById(userDataDTO.getLogin()).orElseThrow(()->new NoSuchElementException("User not found")));
-        return  userDataMapper.toDto(userDataRepository.save(userData));
+        UserData user = userDataRepository.save(userData);
+        return  userDataMapper.toDto(user);
     }
 
     @Override
@@ -74,6 +86,11 @@ public class UserDataServiceImpl implements UserDataService {
                 .build();
 
         return userDataMapper.toDto(userDataRepository.save(userData));
+    }
+
+    @Override
+    public List<UserDataDTO> findUnverifiedUsers() {
+        return userDataMapper.toDtoList(userDataRepository.findUnverifiedUsers());
     }
 
     @Override

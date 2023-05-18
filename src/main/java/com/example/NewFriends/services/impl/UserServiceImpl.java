@@ -3,7 +3,6 @@ package com.example.NewFriends.services.impl;
 
 import com.example.NewFriends.dto.Authentication.AuthDTO;
 import com.example.NewFriends.entity.User;
-import com.example.NewFriends.enums.Status;
 import com.example.NewFriends.repositories.UserRepository;
 import com.example.NewFriends.services.UserService;
 import com.example.NewFriends.services.mapper.UserMapper;
@@ -56,18 +55,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public AuthDTO findByLogin(String login) {
-        return userMapper.toDto(userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + "not found")));
+        return userMapper.toDto(userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + " not found")));
     }
 
     @Override
     public User findUserByLogin(String login) {
-        return userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + "not found"));
+        return userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + " not found"));
     }
 
     @Override
     @Transactional
     public AuthDTO update(String login, User updatedUser) {
-        User user = userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + "not found"));
+        User user = userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User " + login + " not found"));
         user.setLogin(updatedUser.getLogin());
         user.setPassword(updatedUser.getPassword());
         user.setStatus(updatedUser.getStatus());

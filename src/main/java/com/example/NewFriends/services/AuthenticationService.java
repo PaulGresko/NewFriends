@@ -13,7 +13,7 @@ import java.io.IOException;
 public interface AuthenticationService {
 
     AuthenticateDTO register(RegistrationDTO registration);
-    AuthenticateDTO authenticate(AuthDTO auth);
+    AuthenticateDTO authenticate(AuthDTO auth, HttpServletResponse response);
     void saveUserToken(User user, String jwt);
     void revokeAllUserTokens(User user);
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;

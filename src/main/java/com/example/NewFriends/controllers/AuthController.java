@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class AuthController {
 
 
@@ -41,8 +43,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticateDTO> performLogin(@RequestBody AuthDTO authDTO){
-        return ResponseEntity.ok(authenticationService.authenticate(authDTO));
+    public ResponseEntity<AuthenticateDTO> performLogin(@RequestBody AuthDTO authDTO, HttpServletResponse response){
+        return ResponseEntity.ok(authenticationService.authenticate(authDTO,response));
     }
 
     @GetMapping("/login")
@@ -53,7 +55,8 @@ public class AuthController {
 
     @GetMapping("/showUserInfo")
     @ResponseBody
-    public String showUserInfo() {
+    public String showUserInfo(HttpServletRequest request) {
+//        System.out.println(request.getCookies()[0].getValue());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (User)authentication.getPrincipal();
         return userDetails.getAuthorities().stream().toString() + "\n" + userDetails.getUsername() + "\n" + userDetails.getPassword();

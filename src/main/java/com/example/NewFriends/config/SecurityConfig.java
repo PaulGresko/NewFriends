@@ -9,46 +9,46 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig implements WebMvcConfigurer {
+public class SecurityConfig  implements WebMvcConfigurer {
 
     private final UserServiceImpl userService;
     private final JWTFilter jwtFilter;
     private final LogoutHandler logoutHandler;
 
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("*")
-                .allowedOrigins("http://localhost:4444")
-                .allowedHeaders("*")
-                .allowCredentials(true)
-                .maxAge(-1);
-    }
 
     @Autowired
     public SecurityConfig(UserServiceImpl userService, JWTFilter jwtFilter, LogoutHandler logoutHandler) {
         this.userService = userService;
         this.jwtFilter = jwtFilter;
-
         this.logoutHandler = logoutHandler;
+    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("*")
+                .allowedOrigins("*")
+                .allowedHeaders("*")
+//                .allowCredentials(true)
+                .maxAge(-1);
     }
 
 
@@ -73,19 +73,20 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.csrf().disable()
+        http.csrf().disable().cors(Customizer.withDefaults())
                 .authorizeHttpRequests()
                 .requestMatchers("/auth/admin").hasRole("ADMIN")
-                .requestMatchers("/auth/login", "/auth", "/auth/registration", "/error").permitAll()
+                .requestMatchers("/auth/login", "/auth", "/auth/registration", "/error","/users")
+                .permitAll()
                 .anyRequest().authenticated()
-                .and().logout()
-//                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .and()
+                .logout()
                 .logoutUrl("/auth/logout")
                 .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+//                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .and()
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -36,7 +36,7 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user")
     private UserData userData;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Token> tokens;
 
     @Override
