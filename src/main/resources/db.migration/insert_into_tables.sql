@@ -6,11 +6,13 @@ insert into user_data values ('1@mail.ru','Petr','Petr Petrovich', 'М', 'image1
 insert into user_data values ('2@mail.ru','Ann','Ann Antonova', 'Ж', 'image2', '1990-12-03', 'Самара','Овен');
 insert into user_data values ('3@mail.ru','Nikolay','Kolyan', 'М', 'image3', '2010-01-03', 'Сызрань','Весы');
 
-insert into message(date,time,sender,recipient,text) values (curdate(), curtime(), '1@mail.ru', '2@mail.ru', 'Hello!');
-insert into message(date,time,sender,recipient,text) values (curdate(), curtime(), '2@mail.ru', '3@mail.ru', 'Hi!');
-insert into message(date,time,sender,recipient,text) values (curdate(), curtime(), '2@mail.ru', '1@mail.ru', 'Ты уволен!');
-insert into message(date,time,sender,recipient,text) values (curdate(), curtime(), '1@mail.ru', '2@mail.ru', 'Прости!');
-insert into message(date,time,sender,recipient,text) values (curdate(), curtime(), '2@mail.ru', '3@mail.ru', 'Петя мне надоел!');
+
+
+insert into message(date,time, sender, recipient,text, last) values (curdate(), curtime(), '2@mail.ru','3@mail.ru','Hello!', false);
+insert into message(date,time, sender, recipient,text, last) values (curdate(), curtime(), '3@mail.ru','2@mail.ru', 'Hi!', false);
+insert into message(date,time, sender, recipient,text, last) values (curdate(), curtime(), '2@mail.ru','1@mail.ru', 'Ты уволен!',false);
+insert into message(date,time, sender, recipient,text, last) values (curdate(), curtime(), '1@mail.ru','2@mail.ru', 'Прости!',true);
+insert into message(date,time, sender, recipient,text, last) values (curdate(), curtime(), '2@mail.ru','3@mail.ru', 'Петя мне надоел!',true);
 
 insert into friends(friend1, friend2, status) values('1@mail.ru','2@mail.ru','Ожидание');
 insert into friends(friend1, friend2, status) values('2@mail.ru','3@mail.ru','Ожидание');

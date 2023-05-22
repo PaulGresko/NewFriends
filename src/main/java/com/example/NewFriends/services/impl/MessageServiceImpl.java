@@ -3,11 +3,12 @@ package com.example.NewFriends.services.impl;
 import com.example.NewFriends.dto.Message.MessageCreateDTO;
 import com.example.NewFriends.dto.Message.MessageDTO;
 import com.example.NewFriends.entity.Message;
-import com.example.NewFriends.entity.UserData;
 import com.example.NewFriends.repositories.MessageRepository;
 import com.example.NewFriends.repositories.UserDataRepository;
+import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.MessageService;
 import com.example.NewFriends.services.mapper.MessageMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,39 +24,46 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final UserDataRepository userDataRepository;
     private final MessageMapper messageMapper;
+    private final JWTService jwtService;
     @Autowired
-    public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper,UserDataRepository userDataRepository) {
+    public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper, UserDataRepository userDataRepository, JWTService jwtService) {
         this.messageRepository = messageRepository;
         this.messageMapper = messageMapper;
         this.userDataRepository = userDataRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
-    public List<MessageDTO> findAll() {
-        return messageMapper.toDtoList(messageRepository.findAll());
+    public List<MessageDTO> findAllChats(HttpServletRequest request) {
+
+        String username = getLoginFromRequest(request);
+        return messageMapper.toDtoList(messageRepository.findAllChats(username));
     }
 
     @Override
-    public List<MessageDTO> findBySender(String login) {
-        UserData user = userDataRepository.findById(login).orElseThrow(()->new NoSuchElementException("Message`s sender not found"));
-        return messageMapper.toDtoList(messageRepository.findAllBySender(user));
+    public List<MessageDTO> findAllMessages(HttpServletRequest request, String user2) {
+        String user1 = getLoginFromRequest(request);
+
+        return messageMapper.toDtoList(messageRepository.findAllMessages(user1,user2));
     }
 
-    @Override
-    public List<MessageDTO> findByRecipient(String login) {
-        UserData user = userDataRepository.findById(login).orElseThrow(()->new NoSuchElementException("Message`s sender not found"));
-        return messageMapper.toDtoList(messageRepository.findAllByRecipient(user));
-    }
 
     @Override
     @Transactional
     public MessageDTO save(MessageCreateDTO messageDTO) {
+
+        messageRepository.updateLastMessage(messageDTO.getSender(),messageDTO.getRecipient());
+
+
         Message message = new Message();
-        message.setSender(userDataRepository.findById(messageDTO.getSender()).orElseThrow(()->new NoSuchElementException("Message`s sender not found")));
-        message.setRecipient(userDataRepository.findById(messageDTO.getRecipient()).orElseThrow(()->new NoSuchElementException("Message`s recipient not found")));
+        message.setSender(userDataRepository.findById(messageDTO.getSender())
+                .orElseThrow(()->new NoSuchElementException("Отправитель не найден")));
+        message.setRecipient(userDataRepository.findById(messageDTO.getRecipient())
+                .orElseThrow(()->new NoSuchElementException("Получатель не найден")));
         message.setText(messageDTO.getText());
         message.setDate(new Date());
         message.setTime(new Date());
+        message.setLast(true);
         return messageMapper.toDto(messageRepository.save(message));
     }
 
@@ -72,5 +80,14 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageRepository.findById(id).orElseThrow(()->new NoSuchElementException("Message not found"));
         message.setText(messageDTO.getText());
         return messageMapper.toDto(messageRepository.save(message));
+    }
+
+    private String getLoginFromRequest(HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        String username = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            username = jwtService.extractLogin(authHeader.substring(7));
+        }
+        return username;
     }
 }

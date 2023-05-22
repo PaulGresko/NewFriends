@@ -21,6 +21,7 @@ create table message(
     sender VARCHAR(30),
     recipient VARCHAR(30),
     text VARCHAR(200),
+    last boolean,
     FOREIGN KEY (sender) REFERENCES user_data(login) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (recipient) REFERENCES user_data(login) ON DELETE CASCADE ON UPDATE CASCADE
 );

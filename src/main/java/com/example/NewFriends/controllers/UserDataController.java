@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/UserData")
+@RequestMapping("/findFriends")
 public class UserDataController {
 
     private final UserDataService userDataService;

@@ -33,7 +33,7 @@ public class UserDataServiceImpl implements UserDataService {
 
     @Override
     public List<UserDataDTO> findAll() {
-        return userDataMapper.toDtoList(userDataRepository.findAll());
+        return userDataMapper.toDtoList(userDataRepository.findDefaultUsers());
     }
 
     @Override
@@ -68,6 +68,8 @@ public class UserDataServiceImpl implements UserDataService {
         userData.setSex(userDataDTO.getSex());
         userData.setUser(userRepository.findById(userDataDTO.getLogin()).orElseThrow(()->new NoSuchElementException("User not found")));
         UserData user = userDataRepository.save(userData);
+
+        userRepository.updateUserStatusToWaiting(userDataDTO.getLogin());
         return  userDataMapper.toDto(user);
     }
 

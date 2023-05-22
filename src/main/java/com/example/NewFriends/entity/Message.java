@@ -29,7 +29,6 @@ public class Message {
     @Temporal(TemporalType.TIME)
     @DateTimeFormat(pattern = "hh/mm/ss")
     private Date time;
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sender",referencedColumnName = "login")
     private UserData sender;
@@ -37,15 +36,12 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "recipient",referencedColumnName = "login")
     private UserData recipient;
+
     @Column(name = "text")
     private String text;
 
+    @Column(name="last")
+    private Boolean last;
 
-    public Message(UserData sender, UserData recipient, String text) {
-        this.date = new Date();
-        this.time = new Date();
-        this.sender = sender;
-        this.recipient = recipient;
-        this.text = text;
-    }
+
 }
