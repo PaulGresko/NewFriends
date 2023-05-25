@@ -41,7 +41,7 @@ private final JWTService jwtService;
     }
 
     @Override
-    public UserDataDTO findMyData(HttpServletRequest request) { // todo Доделать
+    public UserDataDTO findMyData(HttpServletRequest request) {
         String username = jwtService.getLogin(request);
         return  userDataMapper.toDto(userDataRepository.findMyData(username).orElse(
                 UserData.builder()
