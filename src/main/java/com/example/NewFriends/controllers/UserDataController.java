@@ -3,10 +3,10 @@ package com.example.NewFriends.controllers;
 
 import com.example.NewFriends.dto.userData.CategoryDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
+import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.UserDataService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +17,12 @@ import java.util.List;
 public class UserDataController {
 
     private final UserDataService userDataService;
+    private final JWTService jwtService;
 
     @Autowired
-    public UserDataController(UserDataService userDataService) {
+    public UserDataController(UserDataService userDataService, JWTService jwtService) {
         this.userDataService = userDataService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping
@@ -45,6 +47,12 @@ public class UserDataController {
     @PostMapping("/create")
     public ResponseEntity<UserDataDTO> create(@RequestBody UserDataDTO dto){
         return ResponseEntity.ok(userDataService.save(dto));
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<UserDataDTO> update(@RequestBody UserDataDTO dto, HttpServletRequest request){
+        String username = jwtService.getLogin(request);
+        return ResponseEntity.ok(userDataService.update(username, dto));
     }
 
     @GetMapping("/category")

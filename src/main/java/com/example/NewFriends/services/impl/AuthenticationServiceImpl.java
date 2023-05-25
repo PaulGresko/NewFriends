@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,6 +46,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticateDTO register(AuthDTO registration) {
+
+        if(userRepository.findById(registration.getLogin()).isPresent()){
+            throw new NoSuchElementException("User already exist");
+        }
+
         User user = User.builder()
                 .login(registration.getLogin())
                 .password(passwordEncoder.encode(registration.getPassword()))
