@@ -33,5 +33,7 @@ public class LogoutService implements LogoutHandler {
             tokenRepository.save(storedToken);
             SecurityContextHolder.clearContext();
         }
+
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

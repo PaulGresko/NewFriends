@@ -3,15 +3,17 @@ package com.example.NewFriends.services.impl;
 
 import com.example.NewFriends.dto.userData.CategoryDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
-import com.example.NewFriends.entity.User;
 import com.example.NewFriends.entity.UserData;
 import com.example.NewFriends.repositories.UserDataRepository;
 import com.example.NewFriends.repositories.UserRepository;
+import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.UserDataService;
 import com.example.NewFriends.services.mapper.UserDataMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -20,20 +22,39 @@ public class UserDataServiceImpl implements UserDataService {
 
     private final UserDataRepository userDataRepository;
     private final UserDataMapper userDataMapper;
-
+private final JWTService jwtService;
     private final UserRepository userRepository;
 
     @Autowired
-    public UserDataServiceImpl(UserDataRepository userDataRepository,UserRepository userRepository, UserDataMapper userDataMapper) {
+    public UserDataServiceImpl(UserDataRepository userDataRepository, UserRepository userRepository, UserDataMapper userDataMapper, JWTService jwtService) {
         this.userDataRepository = userDataRepository;
         this.userRepository = userRepository;
         this.userDataMapper = userDataMapper;
+        this.jwtService = jwtService;
     }
 
 
     @Override
-    public List<UserDataDTO> findAll() {
-        return userDataMapper.toDtoList(userDataRepository.findDefaultUsers());
+    public List<UserDataDTO> findAll(HttpServletRequest request) {
+        String username = jwtService.getLogin(request);
+        return userDataMapper.toDtoList(userDataRepository.findDefaultUsers(username));
+    }
+
+    @Override
+    public UserDataDTO findMyData(HttpServletRequest request) { // todo Доделать
+        String username = jwtService.getLogin(request);
+        return  userDataMapper.toDto(userDataRepository.findMyData(username).orElse(
+                UserData.builder()
+                        .login(username)
+                        .name("")
+                        .image("")
+                        .sex("")
+                        .description("")
+                        .birthday(new Date())
+                        .city("")
+                        .zodiacSign("")
+                        .build()
+        ));
     }
 
     @Override
@@ -51,7 +72,6 @@ public class UserDataServiceImpl implements UserDataService {
                 DTO.getCity(),
                 DTO.getAge1(),
                 DTO.getAge2());
-//        String description, String sex, String zodiacSign, String city, Integer age1, Integer age2
         return userDataMapper.toDtoList(users);
     }
 

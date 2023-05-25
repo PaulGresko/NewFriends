@@ -32,21 +32,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
-    private final AuthMapper authMapper;
 
     @Autowired
-    public AuthenticationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTService jwtService, AuthenticationManager authenticationManager, TokenRepository tokenRepository, AuthMapper authMapper) {
+    public AuthenticationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTService jwtService, AuthenticationManager authenticationManager, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.tokenRepository = tokenRepository;
-        this.authMapper = authMapper;
     }
 
 
     @Override
-    public AuthenticateDTO register(UserDTO registration) {
+    public AuthenticateDTO register(AuthDTO registration) {
         User user = User.builder()
                 .login(registration.getLogin())
                 .password(passwordEncoder.encode(registration.getPassword()))

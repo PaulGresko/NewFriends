@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserDTO {
     private final String login;
-    private final String password;
+    private final String role;
 
 }

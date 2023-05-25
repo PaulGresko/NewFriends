@@ -34,10 +34,7 @@ public class UserController {
         return usersService.findAll();
     }
 
-    @GetMapping("/api/usersData")
-    public List<UserDataDTO> show(){
-        return userDataService.findAll();
-    }
+
 
     @GetMapping("users/{login}")
     public AuthDTO show(@PathVariable("login") String login){

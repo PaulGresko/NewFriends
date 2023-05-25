@@ -2,10 +2,7 @@ package com.example.NewFriends.controllers;
 
 import com.example.NewFriends.dto.friends.FriendsDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
-import com.example.NewFriends.entity.User;
-import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.FriendsService;
-import com.example.NewFriends.services.mapper.UserDataMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

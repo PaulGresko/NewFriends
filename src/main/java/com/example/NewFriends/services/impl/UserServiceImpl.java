@@ -31,20 +31,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final User user = userRepository.findById(username).orElseThrow(()->new NoSuchElementException("User not found!"));
-        //UserDetails usersDetails = User.withUsername(user.getLogin()).password(user.getPassword()).authorities(user.getStatus().name()).build();
-
-        return user;
+        return userRepository.findById(username).orElseThrow(()->new NoSuchElementException("User not found!"));
     }
-//    @Override
-//    @Transactional
-//    public UserDTO save(RegistrationDTO userDTO) {
-//        Users user = new Users();
-//        user.setLogin(userDTO.getLogin());
-//        user.setPassword(userDTO.getPassword());
-//        user.setStatus(Status.valueOf(userDTO.getStatus()));
-//        return userMapper.toDto(userRepository.save(user));
-//    }
+
 
     @Override
     @Transactional(readOnly = true)

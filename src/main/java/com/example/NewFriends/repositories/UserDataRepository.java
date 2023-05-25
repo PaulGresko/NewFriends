@@ -8,13 +8,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserDataRepository extends JpaRepository<UserData, String> {
 
-    @Query(value = "select u.* from user_data u left join user u2 on u.login = u2.login where u2.status = 'ROLE_USER';"
+    @Query(value = "select * from user_data where login = :username",
+            nativeQuery = true)
+    Optional<UserData> findMyData(String username);
+
+
+    @Query(value = "select u.* from user_data u left join user u2 on u.login = u2.login where u2.status = 'ROLE_USER' and u2.login <> :username"
             , nativeQuery = true)
-    List<UserData> findDefaultUsers();
+    List<UserData> findDefaultUsers(String username);
 
     @Query(value = "select user_data.login, name, description, sex, image, birthday, city, zodiac_sign from user_data LEFT JOIN user on user_data.login = user.login where status ='ROLE_WAITING'", nativeQuery = true)
     List<UserData> findUnverifiedUsers();

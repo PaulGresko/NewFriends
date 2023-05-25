@@ -4,6 +4,7 @@ package com.example.NewFriends.controllers;
 import com.example.NewFriends.dto.userData.CategoryDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
 import com.example.NewFriends.services.UserDataService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,13 @@ public class UserDataController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDataDTO>> findAll() {
-        return ResponseEntity.ok(userDataService.findAll());
+    public ResponseEntity<List<UserDataDTO>> findAll(HttpServletRequest request) {
+        return ResponseEntity.ok(userDataService.findAll(request));
+    }
+
+    @GetMapping("/myData")
+    public ResponseEntity<UserDataDTO> findMyData(HttpServletRequest request){
+        return ResponseEntity.ok(userDataService.findMyData(request));
     }
 
     @GetMapping("/{login}")

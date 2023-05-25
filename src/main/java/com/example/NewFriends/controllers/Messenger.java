@@ -29,7 +29,7 @@ public class Messenger {
     public ResponseEntity<List<MessageDTO>> getAllMessages(HttpServletRequest request, @PathVariable String login){
         return ResponseEntity.ok(messageService.findAllMessages(request, login));
     }
-    @PatchMapping()
+    @PutMapping()
     public ResponseEntity<MessageDTO> saveMessage(@RequestBody MessageCreateDTO dto){
         return ResponseEntity.ok(messageService.save(dto));
     }
