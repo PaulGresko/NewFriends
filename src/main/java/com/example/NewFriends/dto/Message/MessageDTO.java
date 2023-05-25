@@ -8,9 +8,9 @@ import java.util.Date;
 @Getter
 @RequiredArgsConstructor
 public class MessageDTO {
-    private final String sender;
-    private final String recipient;
+    private final boolean me;
+    private final String text;
     private final Date date;
     private final Date time;
-    private final String text;
+
 }

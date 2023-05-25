@@ -1,6 +1,7 @@
 package com.example.NewFriends.controllers;
 
 
+import com.example.NewFriends.dto.Message.ChatDTO;
 import com.example.NewFriends.dto.Message.MessageCreateDTO;
 import com.example.NewFriends.dto.Message.MessageDTO;
 import com.example.NewFriends.services.MessageService;
@@ -22,7 +23,7 @@ public class Messenger {
     }
 
     @GetMapping()
-    public ResponseEntity<List<MessageDTO>> getAllChats(HttpServletRequest request){
+    public ResponseEntity<List<ChatDTO>> getAllChats(HttpServletRequest request){
         return ResponseEntity.ok(messageService.findAllChats(request));
     }
     @GetMapping("/{login}")

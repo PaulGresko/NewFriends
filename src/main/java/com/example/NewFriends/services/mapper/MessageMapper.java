@@ -12,15 +12,21 @@ import java.util.stream.Collectors;
 
 @Component
 public class MessageMapper {
-    public MessageDTO toDto(Message message){
+    public MessageDTO toDto(Message message, String login){
+
+
         return new MessageDTO(
-                message.getSender().getLogin(),
-                message.getRecipient().getLogin(),
+                message.getSender().getLogin().equals(login),
+                message.getText(),
                 message.getDate(),
-                message.getTime(),
-                message.getText());
+                message.getTime()
+                );
     }
-    public List<MessageDTO> toDtoList(List<Message> messages){
-        return messages.stream().map(this::toDto).collect(Collectors.toList());
+    public List<MessageDTO> toDtoList(List<Message> messages, String login){
+        List<MessageDTO> list = new ArrayList<>();
+        for(Message message : messages){
+            list.add(toDto(message, login));
+        }
+        return list;
     }
 }

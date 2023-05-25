@@ -10,8 +10,18 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    @Query(value = "select * from message where (recipient = :user or sender = :user) and last = true order by date desc, time desc;",nativeQuery = true)
-    List<Message> findAllChats(String user);
+    @Query(value = "select * from (select name, image, m.*\n" +
+            "               from user_data\n" +
+            "                        right join message m on user_data.login = m.recipient\n" +
+            "                where sender = :user and last = true\n" +
+            "                ) a union\n" +
+            "                (select name, image,  m.*\n" +
+            "                from user_data\n" +
+            "                    right join message m on user_data.login = m.sender\n" +
+            "                where recipient = :user and last = true\n" +
+            "                )\n" +
+            "    order by date desc , time desc;",nativeQuery = true)
+    List<Object[]> findAllChats(String user);
 
 
     @Query(value = "select * from message where\n" +

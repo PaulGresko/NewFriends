@@ -1,5 +1,6 @@
 package com.example.NewFriends.services.impl;
 
+import com.example.NewFriends.dto.Message.ChatDTO;
 import com.example.NewFriends.dto.Message.MessageCreateDTO;
 import com.example.NewFriends.dto.Message.MessageDTO;
 import com.example.NewFriends.entity.Message;
@@ -7,6 +8,7 @@ import com.example.NewFriends.repositories.MessageRepository;
 import com.example.NewFriends.repositories.UserDataRepository;
 import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.MessageService;
+import com.example.NewFriends.services.mapper.ChatMapper;
 import com.example.NewFriends.services.mapper.MessageMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +26,28 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final UserDataRepository userDataRepository;
     private final MessageMapper messageMapper;
+    private final ChatMapper chatMapper;
     private final JWTService jwtService;
     @Autowired
-    public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper, UserDataRepository userDataRepository, JWTService jwtService) {
+    public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper, UserDataRepository userDataRepository, ChatMapper chatMapper, JWTService jwtService) {
         this.messageRepository = messageRepository;
         this.messageMapper = messageMapper;
         this.userDataRepository = userDataRepository;
+        this.chatMapper = chatMapper;
         this.jwtService = jwtService;
     }
 
     @Override
-    public List<MessageDTO> findAllChats(HttpServletRequest request) {
-
+    public List<ChatDTO> findAllChats(HttpServletRequest request) {
         String username = jwtService.getLogin(request);
-        return messageMapper.toDtoList(messageRepository.findAllChats(username));
+        return chatMapper.toDtoList(messageRepository.findAllChats(username), username);
     }
 
     @Override
     public List<MessageDTO> findAllMessages(HttpServletRequest request, String user2) {
         String user1 = jwtService.getLogin(request);
 
-        return messageMapper.toDtoList(messageRepository.findAllMessages(user1,user2));
+        return messageMapper.toDtoList(messageRepository.findAllMessages(user1,user2),user1);
     }
 
 
@@ -64,7 +67,7 @@ public class MessageServiceImpl implements MessageService {
         message.setDate(new Date());
         message.setTime(new Date());
         message.setLast(true);
-        return messageMapper.toDto(messageRepository.save(message));
+        return messageMapper.toDto(messageRepository.save(message), messageDTO.getSender());
     }
 
     @Override
@@ -79,6 +82,6 @@ public class MessageServiceImpl implements MessageService {
     public MessageDTO update(Long id, MessageCreateDTO messageDTO) {
         Message message = messageRepository.findById(id).orElseThrow(()->new NoSuchElementException("Message not found"));
         message.setText(messageDTO.getText());
-        return messageMapper.toDto(messageRepository.save(message));
+        return messageMapper.toDto(messageRepository.save(message),messageDTO.getSender());
     }
 }
