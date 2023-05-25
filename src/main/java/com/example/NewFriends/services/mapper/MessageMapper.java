@@ -6,6 +6,7 @@ import com.example.NewFriends.dto.Message.MessageDTO;
 import com.example.NewFriends.entity.Message;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,8 +19,7 @@ public class MessageMapper {
         return new MessageDTO(
                 message.getSender().getLogin().equals(login),
                 message.getText(),
-                message.getDate(),
-                message.getTime()
+        DateFormat.getDateInstance().format(message.getDate())+ " " + DateFormat.getTimeInstance().format(message.getTime())
                 );
     }
     public List<MessageDTO> toDtoList(List<Message> messages, String login){

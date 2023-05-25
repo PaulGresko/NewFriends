@@ -10,7 +10,6 @@ import java.util.Date;
 public class MessageDTO {
     private final boolean me;
     private final String text;
-    private final Date date;
-    private final Date time;
+    private final String dataTime;
 
 }
