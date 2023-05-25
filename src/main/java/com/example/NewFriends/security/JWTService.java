@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.http.HttpStatus;
@@ -77,6 +78,15 @@ public class JWTService {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    public String getLogin(HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        String username = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            username = extractLogin(authHeader.substring(7));
+        }
+        return username;
     }
 
     private Key getSignKey() {

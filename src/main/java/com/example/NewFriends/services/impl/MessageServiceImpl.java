@@ -36,13 +36,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<MessageDTO> findAllChats(HttpServletRequest request) {
 
-        String username = getLoginFromRequest(request);
+        String username = jwtService.getLogin(request);
         return messageMapper.toDtoList(messageRepository.findAllChats(username));
     }
 
     @Override
     public List<MessageDTO> findAllMessages(HttpServletRequest request, String user2) {
-        String user1 = getLoginFromRequest(request);
+        String user1 = jwtService.getLogin(request);
 
         return messageMapper.toDtoList(messageRepository.findAllMessages(user1,user2));
     }
@@ -80,14 +80,5 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageRepository.findById(id).orElseThrow(()->new NoSuchElementException("Message not found"));
         message.setText(messageDTO.getText());
         return messageMapper.toDto(messageRepository.save(message));
-    }
-
-    private String getLoginFromRequest(HttpServletRequest request){
-        String authHeader = request.getHeader("Authorization");
-        String username = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            username = jwtService.extractLogin(authHeader.substring(7));
-        }
-        return username;
     }
 }

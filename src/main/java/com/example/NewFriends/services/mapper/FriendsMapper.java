@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Component
 public class FriendsMapper {
     public FriendsDTO toDto(Friends friends){
-        return new FriendsDTO(friends.getId(),friends.getFriend1().getLogin(), friends.getFriend2().getLogin(), friends.getStatus());
+        return new FriendsDTO(friends.getId(),friends.getFriend1().getLogin(), friends.getFriend2().getLogin(), friends.getStatus().name());
     }
     public List<FriendsDTO> toDtoList(List<Friends> friends){
         return friends.stream().map(this::toDto).collect(Collectors.toList());

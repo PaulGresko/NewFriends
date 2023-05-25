@@ -2,7 +2,7 @@ package com.example.NewFriends.controllers;
 
 
 import com.example.NewFriends.dto.Authentication.AuthDTO;
-import com.example.NewFriends.dto.Authentication.RegistrationDTO;
+import com.example.NewFriends.dto.Authentication.UserDTO;
 import com.example.NewFriends.dto.Authentication.AuthenticateDTO;
 import com.example.NewFriends.entity.User;
 import com.example.NewFriends.services.AuthenticationService;
@@ -23,7 +23,6 @@ import java.io.IOException;
 @CrossOrigin
 public class AuthController {
 
-
     private final AuthenticationService authenticationService;
 
     @Autowired
@@ -33,17 +32,12 @@ public class AuthController {
 
 
     @PostMapping("/registration")
-    public ResponseEntity<AuthenticateDTO> register(@RequestBody RegistrationDTO reg){
+    public ResponseEntity<AuthenticateDTO> register(@RequestBody UserDTO reg){
         return ResponseEntity.ok(authenticationService.register(reg));
     }
 
-    @GetMapping("/admin")
-    public String adminPage(){
-        return "/auth/admin";
-    }
-
     @PostMapping("/login")
-    public ResponseEntity<AuthenticateDTO> performLogin(@RequestBody AuthDTO authDTO, HttpServletResponse response){
+    public ResponseEntity<AuthenticateDTO> login(@RequestBody AuthDTO authDTO, HttpServletResponse response){
         return ResponseEntity.ok(authenticationService.authenticate(authDTO,response));
     }
 
@@ -52,13 +46,8 @@ public class AuthController {
         authenticationService.refreshToken(request,response);
     }
 
-
-    @GetMapping("/showUserInfo")
-    @ResponseBody
-    public String showUserInfo(HttpServletRequest request) {
-//        System.out.println(request.getCookies()[0].getValue());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (User)authentication.getPrincipal();
-        return userDetails.getAuthorities().stream().toString() + "\n" + userDetails.getUsername() + "\n" + userDetails.getPassword();
+    @GetMapping("/userInfo")
+    public ResponseEntity<UserDTO> showUserInfo(HttpServletRequest request) {
+        return ResponseEntity.ok(authenticationService.getUserInfo(request));
     }
 }

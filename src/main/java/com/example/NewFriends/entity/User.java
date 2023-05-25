@@ -2,7 +2,7 @@ package com.example.NewFriends.entity;
 
 
 
-import com.example.NewFriends.enums.Status;
+import com.example.NewFriends.util.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

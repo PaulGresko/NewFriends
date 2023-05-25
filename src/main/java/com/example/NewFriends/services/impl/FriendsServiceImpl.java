@@ -2,12 +2,16 @@ package com.example.NewFriends.services.impl;
 
 import com.example.NewFriends.dto.friends.FriendsCreateDTO;
 import com.example.NewFriends.dto.friends.FriendsDTO;
+import com.example.NewFriends.dto.userData.UserDataDTO;
 import com.example.NewFriends.entity.Friends;
-import com.example.NewFriends.entity.UserData;
 import com.example.NewFriends.repositories.FriendsRepository;
 import com.example.NewFriends.repositories.UserDataRepository;
+import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.FriendsService;
 import com.example.NewFriends.services.mapper.FriendsMapper;
+import com.example.NewFriends.services.mapper.UserDataMapper;
+import com.example.NewFriends.util.enums.FriendsStatus;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +25,16 @@ public class FriendsServiceImpl implements FriendsService {
     private final FriendsRepository friendsRepository;
     private final UserDataRepository userDataRepository;
     private final FriendsMapper friendsMapper;
+    private final UserDataMapper userDataMapper;
+    private final JWTService jwtService;
 
     @Autowired
-    public FriendsServiceImpl(FriendsRepository friendsRepository, UserDataRepository userDataRepository, FriendsMapper friendsMapper) {
+    public FriendsServiceImpl(FriendsRepository friendsRepository, UserDataRepository userDataRepository, FriendsMapper friendsMapper, UserDataMapper userDataMapper, JWTService jwtService) {
         this.friendsRepository = friendsRepository;
         this.userDataRepository = userDataRepository;
         this.friendsMapper = friendsMapper;
+        this.userDataMapper = userDataMapper;
+        this.jwtService = jwtService;
     }
 
 
@@ -36,23 +44,32 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public List<FriendsDTO> findByFriend1(String login) {
-        UserData user = userDataRepository.findById(login).orElseThrow(()-> new NoSuchElementException("friend1 not found"));
-        return friendsMapper.toDtoList(friendsRepository.findAllByFriend1(user));
+    public List<UserDataDTO> findAllFriends(HttpServletRequest request) {
+        String login = jwtService.getLogin(request);
+        return userDataMapper.toDtoList(userDataRepository.findAllFriends(login));
     }
 
     @Override
-    public List<FriendsDTO> findByFriend2(String login) {
-        UserData user = userDataRepository.findById(login).orElseThrow(()-> new NoSuchElementException("friend2 not found"));
-        return friendsMapper.toDtoList(friendsRepository.findAllByFriend2(user));
+    public List<UserDataDTO> findAllInvites(HttpServletRequest request) {
+        String login = jwtService.getLogin(request);
+        return userDataMapper.toDtoList(userDataRepository.findAllInvites(login));
     }
 
     @Override
-    public FriendsDTO save(FriendsCreateDTO friendsDTO) {
+    public List<UserDataDTO> findAllRequests(HttpServletRequest request){
+        String login = jwtService.getLogin(request);
+        return userDataMapper.toDtoList(userDataRepository.findAllRequests(login));
+    }
+
+    @Override
+    public FriendsDTO friendRequest(HttpServletRequest request, String login) {
         Friends friends = new Friends();
-        friends.setFriend1(userDataRepository.findById(friendsDTO.getFriend1()).orElseThrow(()-> new NoSuchElementException("friend1 not found")));
-        friends.setFriend2(userDataRepository.findById(friendsDTO.getFriend2()).orElseThrow(()-> new NoSuchElementException("friend2 not found")));
-        friends.setStatus(friendsDTO.getStatus());
+        String username = jwtService.getLogin(request);
+
+        friends.setFriend1(userDataRepository.findById(username).orElseThrow(()-> new NoSuchElementException("friend1 not found")));
+        friends.setFriend2(userDataRepository.findById(login).orElseThrow(()-> new NoSuchElementException("friend2 not found")));
+        friends.setStatus(FriendsStatus.waiting);
+
         return friendsMapper.toDto(friendsRepository.save(friends));
     }
 

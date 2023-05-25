@@ -1,11 +1,49 @@
 package com.example.NewFriends.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.NewFriends.dto.friends.FriendsDTO;
+import com.example.NewFriends.dto.userData.UserDataDTO;
+import com.example.NewFriends.entity.User;
+import com.example.NewFriends.security.JWTService;
+import com.example.NewFriends.services.FriendsService;
+import com.example.NewFriends.services.mapper.UserDataMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/friends")
 public class FriendsController {
 
+    private final FriendsService friendsService;
 
+    public FriendsController(FriendsService friendsService) {
+        this.friendsService = friendsService;
+    }
+
+
+    @GetMapping()
+    public ResponseEntity<List<UserDataDTO>> getAllFriends(HttpServletRequest request){
+        return ResponseEntity.ok(friendsService.findAllFriends(request));
+    }
+    @PutMapping("/{login}")
+    public ResponseEntity<FriendsDTO> friendsRequest(HttpServletRequest request,@PathVariable String login){
+        return ResponseEntity.ok(friendsService.friendRequest(request,login));
+    }
+
+    @GetMapping("/invites")
+    public ResponseEntity<List<UserDataDTO>> allInvites(HttpServletRequest request){
+        return ResponseEntity.ok(friendsService.findAllInvites(request));
+    }
+
+    @GetMapping("/requests")
+    public ResponseEntity<List<UserDataDTO>> allRequest(HttpServletRequest request){
+        return ResponseEntity.ok(friendsService.findAllRequests(request));
+    }
+
+    @PatchMapping("/invites/{id}")
+    public ResponseEntity<FriendsDTO> takeRequests(@PathVariable String id){
+        return null;
+    }
 }

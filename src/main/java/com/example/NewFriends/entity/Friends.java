@@ -1,5 +1,6 @@
 package com.example.NewFriends.entity;
 
+import com.example.NewFriends.util.enums.FriendsStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,6 @@ public class Friends {
     private UserData friend2;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private FriendsStatus status;
 }

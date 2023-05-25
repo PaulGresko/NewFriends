@@ -2,7 +2,7 @@ package com.example.NewFriends.controllers;
 
 import com.example.NewFriends.dto.userData.UserDataDTO;
 import com.example.NewFriends.entity.User;
-import com.example.NewFriends.enums.Status;
+import com.example.NewFriends.util.enums.Status;
 import com.example.NewFriends.services.UserDataService;
 import com.example.NewFriends.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.example.NewFriends.enums;
+package com.example.NewFriends.util.enums;
 
 public enum Status {
     ROLE_USER,

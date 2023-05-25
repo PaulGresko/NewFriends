@@ -1,17 +1,17 @@
 package com.example.NewFriends.services.impl;
 
 import com.example.NewFriends.dto.Authentication.AuthDTO;
-import com.example.NewFriends.dto.Authentication.RegistrationDTO;
+import com.example.NewFriends.dto.Authentication.UserDTO;
 import com.example.NewFriends.dto.Authentication.AuthenticateDTO;
 import com.example.NewFriends.entity.Token;
 import com.example.NewFriends.entity.User;
-import com.example.NewFriends.enums.Status;
+import com.example.NewFriends.services.mapper.AuthMapper;
+import com.example.NewFriends.util.enums.Status;
 import com.example.NewFriends.repositories.TokenRepository;
 import com.example.NewFriends.repositories.UserRepository;
 import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.AuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +32,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
+    private final AuthMapper authMapper;
 
     @Autowired
-    public AuthenticationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTService jwtService, AuthenticationManager authenticationManager, TokenRepository tokenRepository) {
+    public AuthenticationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTService jwtService, AuthenticationManager authenticationManager, TokenRepository tokenRepository, AuthMapper authMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.tokenRepository = tokenRepository;
+        this.authMapper = authMapper;
     }
 
 
     @Override
-    public AuthenticateDTO register(RegistrationDTO registration) {
+    public AuthenticateDTO register(UserDTO registration) {
         User user = User.builder()
                 .login(registration.getLogin())
                 .password(passwordEncoder.encode(registration.getPassword()))
@@ -119,5 +121,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         new AuthenticateDTO(jwt,refreshToken,user.getLogin(),user.getStatus().toString()));
             }
         }
+    }
+
+    @Override
+    public UserDTO getUserInfo(HttpServletRequest request) {
+        String username = jwtService.getLogin(request);
+        User user = userRepository.findById(username).orElseThrow(()-> new NoSuchElementException("User not found"));
+        return new UserDTO(user.getLogin(),user.getStatus().name());
     }
 }
