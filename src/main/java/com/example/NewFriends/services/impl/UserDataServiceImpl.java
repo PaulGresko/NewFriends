@@ -3,12 +3,14 @@ package com.example.NewFriends.services.impl;
 
 import com.example.NewFriends.dto.userData.CategoryDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
+import com.example.NewFriends.entity.User;
 import com.example.NewFriends.entity.UserData;
 import com.example.NewFriends.repositories.UserDataRepository;
 import com.example.NewFriends.repositories.UserRepository;
 import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.UserDataService;
 import com.example.NewFriends.services.mapper.UserDataMapper;
+import com.example.NewFriends.util.enums.Status;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,10 +88,13 @@ private final JWTService jwtService;
         userData.setDescription(userDataDTO.getDescription());
         userData.setZodiacSign(userDataDTO.getZodiacSign());
         userData.setSex(userDataDTO.getSex());
-        userData.setUser(userRepository.findById(userDataDTO.getLogin()).orElseThrow(()->new NoSuchElementException("User not found")));
+        //userData.setUser(userRepository.findById(userDataDTO.getLogin()).orElseThrow(()->new NoSuchElementException("User not found")));
         UserData user = userDataRepository.save(userData);
 
-        userRepository.updateUserStatusToWaiting(userDataDTO.getLogin());
+       // userRepository.updateUserStatusToWaiting(userDataDTO.getLogin());
+        User user1 = userRepository.findById(userDataDTO.getLogin()).orElseThrow(()->new NoSuchElementException("User not found"));
+        user1.setStatus(Status.ROLE_WAITING);
+        userRepository.save(user1);
         return  userDataMapper.toDto(user);
     }
 

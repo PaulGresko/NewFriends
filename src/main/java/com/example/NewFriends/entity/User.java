@@ -5,6 +5,7 @@ package com.example.NewFriends.entity;
 import com.example.NewFriends.util.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Table(name = "user")
+@DynamicUpdate
 public class User implements UserDetails {
     @Id
     @Column

@@ -30,10 +30,6 @@ public class UserDataController {
         return ResponseEntity.ok(userDataService.findAll(request));
     }
 
-    @GetMapping("/myData")
-    public ResponseEntity<UserDataDTO> findMyData(HttpServletRequest request){
-        return ResponseEntity.ok(userDataService.findMyData(request));
-    }
 
     @GetMapping("/{login}")
     public ResponseEntity<UserDataDTO> findByLogin(@PathVariable String login){
@@ -44,10 +40,6 @@ public class UserDataController {
         return ResponseEntity.ok(userDataService.update(login, dto));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<UserDataDTO> create(@RequestBody UserDataDTO dto){
-        return ResponseEntity.ok(userDataService.save(dto));
-    }
 
     @PatchMapping("/update")
     public ResponseEntity<UserDataDTO> update(@RequestBody UserDataDTO dto, HttpServletRequest request){
