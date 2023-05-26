@@ -4,11 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
+
 
 @Entity
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Table(name="token")
+@DynamicUpdate
 public class Token {
 
     @Id

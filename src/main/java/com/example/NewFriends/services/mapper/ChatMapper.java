@@ -11,7 +11,7 @@ public class ChatMapper {
     public ChatDTO toDto(Object[] chat,String login){
         ChatDTO dto = new ChatDTO();
         dto.setCompanionName((String) chat[0]);
-        dto.setImage((String) chat[1]);
+        dto.setImage((byte[]) chat[1]);
         dto.setText((String) chat[7]);
         if(chat[5].equals(login)){
             dto.setMe(true);

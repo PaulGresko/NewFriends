@@ -74,11 +74,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwt = jwtService.generateJWT(user);
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
-        saveUserToken(user,jwt);
-//        Cookie cookie = new Cookie("access-token",jwt);
-//        response.addCookie(cookie);
-//        cookie = new Cookie("refresh-token",refreshToken);
-//        response.addCookie(cookie);
+        saveUserToken(user, jwt);
+
 
         return new AuthenticateDTO(jwt, refreshToken, user.getLogin(), user.getStatus().toString());
     }
@@ -101,7 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         validUserTokens.forEach(token -> {
             token.setExpired(true);
         });
-        tokenRepository.saveAll(validUserTokens);
+        //tokenRepository.saveAll(validUserTokens);
     }
 
     @Override

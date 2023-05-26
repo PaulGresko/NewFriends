@@ -9,7 +9,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class ChatDTO {
     private String companionName;
-    private String image;
+    private byte[] image;
     private String companion;
     private String text;
     private boolean me;

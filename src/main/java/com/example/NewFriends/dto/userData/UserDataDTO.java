@@ -12,7 +12,7 @@ public class UserDataDTO {
 
     private final String login;
     private final String name;
-    private final String image;
+    private final byte[] image;
     private final String sex;
     private final String description;
     private final Date birthday;

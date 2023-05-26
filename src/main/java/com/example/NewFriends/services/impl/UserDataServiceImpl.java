@@ -47,7 +47,7 @@ private final JWTService jwtService;
                 UserData.builder()
                         .login(username)
                         .name("")
-                        .image("")
+                        .image("".getBytes())
                         .sex("")
                         .description("")
                         .birthday(new Date())
