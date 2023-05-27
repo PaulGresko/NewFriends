@@ -83,14 +83,14 @@ public class UserDataServiceImpl implements UserDataService {
     }
 
     @Override
-    public UserDataDTO save(MultipartFile file, HttpServletRequest request, UserDataCreateDTO dto) throws IOException {
+    public UserDataDTO save(HttpServletRequest request, UserDataCreateDTO dto) {
         String login = jwtService.getLogin(request);
 
         UserData userData = new UserData();
         userData.setLogin(login);
         userData.setName(dto.getName());
         userData.setBirthday(dto.getBirthday());
-        userData.setImage(file.getBytes());
+        userData.setImage(dto.getImage());
         userData.setCity(dto.getCity());
         userData.setDescription(dto.getDescription());
         userData.setZodiacSign(ZodiacSign.getZodiacSign(dto.getBirthday()));

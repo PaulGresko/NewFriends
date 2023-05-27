@@ -19,7 +19,7 @@ public interface UserDataService {
     UserDataDTO findMyData(HttpServletRequest request);
     UserDataDTO findByLogin(String login);
     List<UserDataDTO> findByCategory(CategoryDTO categoryDTO);
-    UserDataDTO save(MultipartFile file, HttpServletRequest request, UserDataCreateDTO userData) throws IOException;
+    UserDataDTO save(HttpServletRequest request, UserDataCreateDTO userData);
     UserDataDTO update(HttpServletRequest request, UserDataCreateDTO userData);
     List<UserDataDTO> findUnverifiedUsers();
     String delete(String login);

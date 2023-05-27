@@ -25,6 +25,7 @@ public class UserData {
     @Column(name = "name")
     private String name;
     @Column(name = "image")
+    @Lob
     private byte[] image;
 
     @Column(name="sex")
