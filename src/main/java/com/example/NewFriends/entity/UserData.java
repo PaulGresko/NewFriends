@@ -1,5 +1,7 @@
 package com.example.NewFriends.entity;
 
+import com.example.NewFriends.util.enums.Sex;
+import com.example.NewFriends.util.enums.ZodiacSign;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,7 +28,8 @@ public class UserData {
     private byte[] image;
 
     @Column(name="sex")
-    private String sex;
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
     @Column(name="description")
     private String description;
     @Column(name = "birthday")
@@ -36,7 +39,8 @@ public class UserData {
     @Column(name="city")
     private String city;
     @Column(name = "zodiac_sign")
-    private String zodiacSign;
+    @Enumerated(EnumType.STRING)
+    private ZodiacSign zodiacSign;
 
 
     @ToString.Exclude

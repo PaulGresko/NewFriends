@@ -35,17 +35,17 @@ public class UserDataController {
     public ResponseEntity<UserDataDTO> findByLogin(@PathVariable String login){
         return ResponseEntity.ok(userDataService.findByLogin(login));
     }
-    @PatchMapping("/{login}")
-    public ResponseEntity<UserDataDTO> update(@PathVariable String login, @RequestBody UserDataDTO dto){
-        return ResponseEntity.ok(userDataService.update(login, dto));
-    }
-
-
-    @PatchMapping("/update")
-    public ResponseEntity<UserDataDTO> update(@RequestBody UserDataDTO dto, HttpServletRequest request){
-        String username = jwtService.getLogin(request);
-        return ResponseEntity.ok(userDataService.update(username, dto));
-    }
+//    @PatchMapping("/{login}")
+//    public ResponseEntity<UserDataDTO> update(@PathVariable String login, @RequestBody UserDataDTO dto){
+//        return ResponseEntity.ok(userDataService.update(login, dto));
+//    }
+//
+//
+//    @PatchMapping("/update")
+//    public ResponseEntity<UserDataDTO> update(@RequestBody UserDataDTO dto, HttpServletRequest request){
+//        String username = jwtService.getLogin(request);
+//        return ResponseEntity.ok(userDataService.update(username, dto));
+//    }
 
     @GetMapping("/category")
     public ResponseEntity<List<UserDataDTO>> findByCategory(@RequestBody CategoryDTO dto){

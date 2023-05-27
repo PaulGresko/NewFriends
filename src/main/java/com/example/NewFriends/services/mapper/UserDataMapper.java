@@ -12,12 +12,15 @@ import java.util.stream.Collectors;
 public class UserDataMapper {
 
     public UserDataDTO toDto(UserData userData){
-        return new UserDataDTO(userData.getLogin(),
+        return new UserDataDTO(
+                userData.getLogin(),
                 userData.getName(),
                 userData.getImage(),
-                userData.getSex(),
+                userData.getSex().name(),
                 userData.getDescription(),
-                userData.getBirthday(), userData.getCity(), userData.getZodiacSign());
+                userData.getBirthday(),
+                userData.getCity(),
+                userData.getZodiacSign().name());
     }
     public List<UserDataDTO> toDtoList(List<UserData> userData){
         return userData.stream().map(this::toDto).collect(Collectors.toList());

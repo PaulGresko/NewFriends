@@ -8,7 +8,7 @@ create table user_data(
     name VARCHAR(50),
     description VARCHAR(200),
     sex VARCHAR(1),
-    image VARCHAR(500),
+    image VARBINARY(200),
     birthday DATE,
     city VARCHAR(50),
     zodiac_sign VARCHAR(20),

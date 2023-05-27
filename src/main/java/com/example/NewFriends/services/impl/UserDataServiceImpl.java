@@ -2,6 +2,7 @@ package com.example.NewFriends.services.impl;
 
 
 import com.example.NewFriends.dto.userData.CategoryDTO;
+import com.example.NewFriends.dto.userData.UserDataCreateDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
 import com.example.NewFriends.entity.User;
 import com.example.NewFriends.entity.UserData;
@@ -10,11 +11,15 @@ import com.example.NewFriends.repositories.UserRepository;
 import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.UserDataService;
 import com.example.NewFriends.services.mapper.UserDataMapper;
+import com.example.NewFriends.util.enums.Sex;
 import com.example.NewFriends.util.enums.Status;
+import com.example.NewFriends.util.enums.ZodiacSign;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,7 +29,7 @@ public class UserDataServiceImpl implements UserDataService {
 
     private final UserDataRepository userDataRepository;
     private final UserDataMapper userDataMapper;
-private final JWTService jwtService;
+    private final JWTService jwtService;
     private final UserRepository userRepository;
 
     @Autowired
@@ -50,11 +55,11 @@ private final JWTService jwtService;
                         .login(username)
                         .name("")
                         .image("".getBytes())
-                        .sex("")
+                        .sex(Sex.М)
                         .description("")
                         .birthday(new Date())
                         .city("")
-                        .zodiacSign("")
+                        .zodiacSign(ZodiacSign.Водолей)
                         .build()
         ));
     }
@@ -78,41 +83,45 @@ private final JWTService jwtService;
     }
 
     @Override
-    public UserDataDTO save(UserDataDTO userDataDTO) {
+    public UserDataDTO save(MultipartFile file, HttpServletRequest request, UserDataCreateDTO dto) throws IOException {
+        String login = jwtService.getLogin(request);
+
         UserData userData = new UserData();
-        userData.setLogin(userDataDTO.getLogin());
-        userData.setName(userDataDTO.getName());
-        userData.setBirthday(userDataDTO.getBirthday());
-        userData.setImage(userDataDTO.getImage());
-        userData.setCity(userDataDTO.getCity());
-        userData.setDescription(userDataDTO.getDescription());
-        userData.setZodiacSign(userDataDTO.getZodiacSign());
-        userData.setSex(userDataDTO.getSex());
-        //userData.setUser(userRepository.findById(userDataDTO.getLogin()).orElseThrow(()->new NoSuchElementException("User not found")));
+        userData.setLogin(login);
+        userData.setName(dto.getName());
+        userData.setBirthday(dto.getBirthday());
+        userData.setImage(file.getBytes());
+        userData.setCity(dto.getCity());
+        userData.setDescription(dto.getDescription());
+        userData.setZodiacSign(ZodiacSign.getZodiacSign(dto.getBirthday()));
+        userData.setSex(Sex.valueOf(dto.getSex()));
+        //userData.setUser(userRepository.findById(dto.getLogin()).orElseThrow(()->new NoSuchElementException("User not found")));
         UserData user = userDataRepository.save(userData);
 
-       // userRepository.updateUserStatusToWaiting(userDataDTO.getLogin());
-        User user1 = userRepository.findById(userDataDTO.getLogin()).orElseThrow(()->new NoSuchElementException("User not found"));
+       // userRepository.updateUserStatusToWaiting(dto.getLogin());
+        User user1 = userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User not found"));
         user1.setStatus(Status.ROLE_WAITING);
         userRepository.save(user1);
         return  userDataMapper.toDto(user);
     }
 
     @Override
-    public UserDataDTO update(String login, UserDataDTO userDataDTO) {
-        UserData userData = UserData.builder()
-                .user(userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User not found")))
-                .birthday(userDataDTO.getBirthday())
-                .name(userDataDTO.getName())
-                .city(userDataDTO.getCity())
-                .image(userDataDTO.getImage())
-                .description(userDataDTO.getDescription())
-                .sex(userDataDTO.getSex())
-                .zodiacSign(userDataDTO.getSex())
-                .login(login)
-                .build();
+    public UserDataDTO update(HttpServletRequest request, UserDataCreateDTO dto) {
+//        String login = jwtService.getLogin(request);
+//        UserData userData = UserData.builder()
+//                .user(userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User not found")))
+//                .birthday(dto.getBirthday())
+//                .name(dto.getName())
+//                .city(dto.getCity())
+//                .image(dto.getImage())
+//                .description(dto.getDescription())
+//                .sex(Sex.valueOf(dto.getSex()))
+//                .zodiacSign(ZodiacSign.getZodiacSign(dto.getBirthday()))
+//                .login(login)
+//                .build();
 
-        return userDataMapper.toDto(userDataRepository.save(userData));
+//        return userDataMapper.toDto(userDataRepository.save(userData));
+  return null;
     }
 
     @Override

@@ -15,10 +15,10 @@ public class ChatMapper {
         dto.setText((String) chat[7]);
         if(chat[5].equals(login)){
             dto.setMe(true);
-            dto.setCompanion((String) chat[5]);
+            dto.setCompanion((String) chat[6]);
         }else{
             dto.setMe(false);
-            dto.setCompanion((String) chat[6]);
+            dto.setCompanion((String) chat[5]);
         }
         return dto;
     }
