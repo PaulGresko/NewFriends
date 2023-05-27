@@ -2,6 +2,7 @@ package com.example.NewFriends.services;
 
 
 
+import com.example.NewFriends.dto.Authentication.UserDTO;
 import com.example.NewFriends.dto.complaint.ComplaintCreateDTO;
 import com.example.NewFriends.dto.complaint.ComplaintDTO;
 import com.example.NewFriends.entity.Complaint;
@@ -15,6 +16,6 @@ public interface ComplaintService {
     List<ComplaintDTO> findBySender(String login);
     List<ComplaintDTO> findByVictim(String login);
     ComplaintDTO save(ComplaintCreateDTO complaintDTO);
-    ComplaintDTO update(Long id, Complaint complaint);
-    String delete(Long id);
+    void ban(Long id);
+    void unban(Long id);
 }

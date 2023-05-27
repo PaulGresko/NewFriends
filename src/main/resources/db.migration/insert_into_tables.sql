@@ -14,9 +14,9 @@ insert into message(date,time, sender, recipient,text, last) values (curdate(), 
 insert into message(date,time, sender, recipient,text, last) values (curdate(), curtime(), '1@mail.ru','2@mail.ru', 'Прости!',true);
 insert into message(date,time, sender, recipient,text, last) values (curdate(), curtime(), '2@mail.ru','3@mail.ru', 'Петя мне надоел!',true);
 
-insert into friends(friend1, friend2, status) values('1@mail.ru','2@mail.ru','Ожидание');
-insert into friends(friend1, friend2, status) values('2@mail.ru','3@mail.ru','Ожидание');
-insert into friends(friend1, friend2, status) values('1@mail.ru','3@mail.ru','Ожидание');
+insert into friends(friend1, friend2, status) values('1@mail.ru','2@mail.ru','waiting');
+insert into friends(friend1, friend2, status) values('2@mail.ru','3@mail.ru','waiting');
+insert into friends(friend1, friend2, status) values('1@mail.ru','3@mail.ru','waiting');
 
-insert into complaint(date,time,sender,victim,text, checked) values (curdate(), curtime(), '2@mail.ru', '1@mail.ru', 'Заносчив', false);
-insert into complaint(date,time,sender,victim,text, checked) values (curdate(), curtime(), '3@mail.ru', '1@mail.ru', 'Очень заносчив', false);
+insert into complaint(date,time,sender,victim,text) values (curdate(), curtime(), '2@mail.ru', '1@mail.ru', 'Заносчив');
+insert into complaint(date,time,sender,victim,text) values (curdate(), curtime(), '3@mail.ru', '1@mail.ru', 'Очень заносчив');

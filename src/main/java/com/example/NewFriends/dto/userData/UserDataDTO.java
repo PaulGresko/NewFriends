@@ -15,7 +15,7 @@ public class UserDataDTO {
     private final byte[] image;
     private final String sex;
     private final String description;
-    private final Date birthday;
+    private final Integer year;
     private final String city;
     private final String zodiacSign;
 

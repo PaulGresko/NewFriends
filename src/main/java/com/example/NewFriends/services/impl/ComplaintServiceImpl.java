@@ -1,13 +1,17 @@
 package com.example.NewFriends.services.impl;
 
+import com.example.NewFriends.dto.Authentication.UserDTO;
 import com.example.NewFriends.dto.complaint.ComplaintCreateDTO;
 import com.example.NewFriends.dto.complaint.ComplaintDTO;
 import com.example.NewFriends.entity.Complaint;
+import com.example.NewFriends.entity.User;
 import com.example.NewFriends.entity.UserData;
 import com.example.NewFriends.repositories.ComplaintRepository;
 import com.example.NewFriends.repositories.UserDataRepository;
+import com.example.NewFriends.repositories.UserRepository;
 import com.example.NewFriends.services.ComplaintService;
 import com.example.NewFriends.services.mapper.ComplaintMapper;
+import com.example.NewFriends.util.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +27,14 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final UserDataRepository userDataRepository;
     private final ComplaintMapper complaintMapper;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, UserDataRepository userDataRepository, ComplaintMapper complaintMapper) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, UserDataRepository userDataRepository, ComplaintMapper complaintMapper, UserRepository userRepository) {
         this.complaintRepository = complaintRepository;
         this.userDataRepository = userDataRepository;
         this.complaintMapper = complaintMapper;
+        this.userRepository = userRepository;
     }
 
 
@@ -68,17 +74,17 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     @Transactional
-    public ComplaintDTO update(Long id, Complaint Complaint) {
-
+    public void ban(Long id) {
         Complaint complaint = complaintRepository.findById(id).orElseThrow(()-> new NoSuchElementException("Complaint not found"));
-        complaint.setText(complaint.getText());
-        complaint.setChecked(Complaint.isChecked());
-        return complaintMapper.toDto(complaintRepository.save(complaint));
+        User user = userRepository.findById(complaint.getVictim().getLogin()).orElseThrow(()-> new NoSuchElementException("User not found"));
+        user.setStatus(Status.ROLE_LOCK);
+        user = userRepository.save(user);
+        complaintRepository.deleteAllByVictim(user.getLogin());
     }
 
     @Override
-    public String delete(Long id) {
+    @Transactional
+    public void unban(Long id) {
         complaintRepository.deleteById(id);
-        return "User was successful deleted!";
     }
 }

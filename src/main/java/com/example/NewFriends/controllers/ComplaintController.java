@@ -17,12 +17,10 @@ import java.util.List;
 public class ComplaintController {
 
     private final ComplaintService complaintService;
-    private final UserService userService;
 
     @Autowired
-    public ComplaintController(ComplaintService complaintService, UserService userService) {
+    public ComplaintController(ComplaintService complaintService) {
         this.complaintService = complaintService;
-        this.userService = userService;
     }
 
     @GetMapping
@@ -33,16 +31,13 @@ public class ComplaintController {
     public ResponseEntity<List<ComplaintDTO>> complaint(@PathVariable String login){
         return ResponseEntity.ok(complaintService.findByVictim(login));
     }
-    @PatchMapping("/{complaint_ID}")
+    @PatchMapping("/ban/{complaint_ID}")
     public void banUser(@PathVariable String complaint_ID){ // todo надо проверить
+        complaintService.ban(Long.valueOf(complaint_ID));
+    }
 
-        Complaint complaint = complaintService.findById(Long.valueOf(complaint_ID));
-        complaint.setChecked(true);
-        complaintService.update(complaint.getId(),complaint);
-
-
-        User user = userService.findUserByLogin(complaint.getVictim().getLogin());
-        user.setStatus(Status.ROLE_LOCK);
-        userService.update(user.getLogin(), user);
+    @PatchMapping("/unban/{complaint_ID}")
+    public void unbanUser(@PathVariable String complaint_ID){
+        complaintService.unban(Long.valueOf(complaint_ID));
     }
 }

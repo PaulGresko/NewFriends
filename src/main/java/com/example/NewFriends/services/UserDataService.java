@@ -23,6 +23,4 @@ public interface UserDataService {
     UserDataDTO update(HttpServletRequest request, UserDataCreateDTO userData);
     List<UserDataDTO> findUnverifiedUsers();
     String delete(String login);
-
-
 }

@@ -14,5 +14,4 @@ public class ComplaintDTO {
     private final String sender;
     private final String victim;
     private final String text;
-    private final boolean checked;
 }

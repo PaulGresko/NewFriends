@@ -38,8 +38,5 @@ public class Complaint {
     private UserData victim;
     @Column
     private String text;
-    @Column
-    private boolean checked;
-
 
 }
