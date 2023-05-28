@@ -76,8 +76,9 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     @Transactional
-    public void acceptRequest(Integer id) {
-        friendsRepository.acceptRequestFriend(id);
+    public void acceptRequest(HttpServletRequest request, String login2) {
+        String login1 = jwtService.getLogin(request);
+        friendsRepository.acceptRequestFriend(login1,login2);
     }
 
     @Override

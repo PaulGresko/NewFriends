@@ -40,9 +40,9 @@ public class FriendsController {
         return ResponseEntity.ok(friendsService.findAllRequests(request));
     }
 
-    @PatchMapping("/invites/{id}")
-    public ResponseEntity<Map<String,String>> takeRequests(@PathVariable String id){
-        friendsService.acceptRequest(Integer.valueOf(id));
+    @PatchMapping("/invites/{login}")
+    public ResponseEntity<Map<String,String>> takeRequests(@PathVariable String login, HttpServletRequest request){
+        friendsService.acceptRequest(request,login);
         return ResponseEntity.ok(Map.of("Message", "Request accepted"));
     }
 }
