@@ -45,31 +45,20 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public List<ComplaintDTO> findAll() {
-        return complaintMapper.toDtoList(complaintRepository.findAll());
+        return complaintMapper.toDtoList(complaintRepository.findAllComplaints());
     }
 
-    @Override
-    public List<ComplaintDTO> findBySender(String login) {
-        UserData user = userDataRepository.findById(login).orElseThrow(()-> new NoSuchElementException("Complaint`s sender not found"));
-        return complaintMapper.toDtoList(complaintRepository.findAllBySender(user));
-    }
 
-    @Override
-    public List<ComplaintDTO> findByVictim(String login) {
-        UserData user = userDataRepository.findById(login).orElseThrow(()->new NoSuchElementException("Message`s recipient not found"));
-        return complaintMapper.toDtoList(complaintRepository.findAllBySender(user));
-    }
 
     @Override
     @Transactional
-    public ComplaintDTO save(ComplaintCreateDTO complaintDTO) {
+    public void save(ComplaintCreateDTO complaintDTO) {
         Complaint complaint = new Complaint();
         complaint.setSender(userDataRepository.findById(complaintDTO.getSender()).orElseThrow(()-> new NoSuchElementException("Complaint`s sender not found")));
         complaint.setVictim(userDataRepository.findById(complaintDTO.getVictim()).orElseThrow(()-> new NoSuchElementException("Complaint`s victim not found")));
         complaint.setText(complaintDTO.getText());
         complaint.setDate(new Date());
         complaint.setTime(new Date());
-        return complaintMapper.toDto(complaintRepository.save(complaint));
     }
 
     @Override

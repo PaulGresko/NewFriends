@@ -11,6 +11,11 @@ import java.util.List;
 
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
+@Query(value ="select id, date, time, sender, victim, text, name, description, sex, image, birthday, city, zodiac_sign\n" +
+        "    from complaint left join user_data ud on ud.login = complaint.victim;",
+        nativeQuery = true)
+    List<Object[]> findAllComplaints();
+
     List<Complaint> findAllBySender(UserData user);
     List<Complaint> findAllByVictim(UserData user);
 

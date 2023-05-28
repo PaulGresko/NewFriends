@@ -13,9 +13,9 @@ public interface ComplaintService {
 
     Complaint findById(Long id);
     List<ComplaintDTO> findAll();
-    List<ComplaintDTO> findBySender(String login);
-    List<ComplaintDTO> findByVictim(String login);
-    ComplaintDTO save(ComplaintCreateDTO complaintDTO);
+//    List<ComplaintDTO> findBySender(String login);
+//    List<ComplaintDTO> findByVictim(String login);
+    void save(ComplaintCreateDTO complaintDTO);
     void ban(Long id);
     void unban(Long id);
 }
