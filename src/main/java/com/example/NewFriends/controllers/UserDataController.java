@@ -1,9 +1,11 @@
 package com.example.NewFriends.controllers;
 
 
+import com.example.NewFriends.dto.complaint.ComplaintCreateDTO;
 import com.example.NewFriends.dto.userData.CategoryDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
 import com.example.NewFriends.security.JWTService;
+import com.example.NewFriends.services.ComplaintService;
 import com.example.NewFriends.services.UserDataService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,12 @@ import java.util.List;
 public class UserDataController {
 
     private final UserDataService userDataService;
-    private final JWTService jwtService;
+    private final ComplaintService complaintService;
 
     @Autowired
-    public UserDataController(UserDataService userDataService, JWTService jwtService) {
+    public UserDataController(UserDataService userDataService, ComplaintService complaintService) {
         this.userDataService = userDataService;
-        this.jwtService = jwtService;
+        this.complaintService = complaintService;
     }
 
     @GetMapping
@@ -35,7 +37,11 @@ public class UserDataController {
         userDataService.addNewFriend(request, login);
         return ResponseEntity.ok(userDataService.findUser(request));
     }
-
+    @PostMapping("/complain")
+    public ResponseEntity<UserDataDTO> complain(HttpServletRequest request,@RequestBody ComplaintCreateDTO dto){
+        complaintService.create(request,dto);
+        return ResponseEntity.ok(userDataService.findUser(request));
+    }
 
 
 

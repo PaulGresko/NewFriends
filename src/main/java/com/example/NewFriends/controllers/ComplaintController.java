@@ -27,10 +27,7 @@ public class ComplaintController {
     public ResponseEntity<List<ComplaintDTO>> allComplaints(){
         return ResponseEntity.ok(complaintService.findAll());
     }
-//    @GetMapping("/{login}")
-//    public ResponseEntity<List<ComplaintDTO>> complaint(@PathVariable String login){
-//        return ResponseEntity.ok(complaintService.findByVictim(login));
-//    }
+
     @PatchMapping("/ban/{complaint_ID}")
     public void banUser(@PathVariable String complaint_ID){ // todo надо проверить
         complaintService.ban(Long.valueOf(complaint_ID));
@@ -40,4 +37,5 @@ public class ComplaintController {
     public void unbanUser(@PathVariable String complaint_ID){
         complaintService.unban(Long.valueOf(complaint_ID));
     }
+
 }

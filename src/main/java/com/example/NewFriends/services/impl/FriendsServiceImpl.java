@@ -82,6 +82,13 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
+    @Transactional
+    public void cancelRequest(HttpServletRequest request, String login2) {
+        String login1 = jwtService.getLogin(request);
+        friendsRepository.cancelRequestFriend(login1,login2);
+    }
+
+    @Override
     public FriendsDTO update(Long id, FriendsCreateDTO friendsDTO) {
         Friends friends = friendsRepository.findById(id).orElseThrow(()-> new NoSuchElementException("Friends not found"));
         friends.setStatus(friends.getStatus());

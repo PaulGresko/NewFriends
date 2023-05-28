@@ -20,6 +20,8 @@ public interface FriendsService {
     FriendsDTO friendRequest(HttpServletRequest request, String login);
 
     void acceptRequest(HttpServletRequest request, String login2);
+    void cancelRequest(HttpServletRequest request,String login2);
+
     FriendsDTO update(Long id, FriendsCreateDTO friendsDTO);
     String delete(Long id);
 }

@@ -1,17 +1,21 @@
 package com.example.NewFriends.services.impl;
 
-import com.example.NewFriends.dto.Authentication.UserDTO;
 import com.example.NewFriends.dto.complaint.ComplaintCreateDTO;
 import com.example.NewFriends.dto.complaint.ComplaintDTO;
 import com.example.NewFriends.entity.Complaint;
+import com.example.NewFriends.entity.Friends;
 import com.example.NewFriends.entity.User;
 import com.example.NewFriends.entity.UserData;
 import com.example.NewFriends.repositories.ComplaintRepository;
+import com.example.NewFriends.repositories.FriendsRepository;
 import com.example.NewFriends.repositories.UserDataRepository;
 import com.example.NewFriends.repositories.UserRepository;
+import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.ComplaintService;
 import com.example.NewFriends.services.mapper.ComplaintMapper;
+import com.example.NewFriends.util.enums.FriendsStatus;
 import com.example.NewFriends.util.enums.Status;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,13 +32,17 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final UserDataRepository userDataRepository;
     private final ComplaintMapper complaintMapper;
     private final UserRepository userRepository;
+    private final FriendsRepository friendsRepository;
+    private final JWTService jwtService;
 
     @Autowired
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, UserDataRepository userDataRepository, ComplaintMapper complaintMapper, UserRepository userRepository) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, UserDataRepository userDataRepository, ComplaintMapper complaintMapper, UserRepository userRepository, FriendsRepository friendsRepository, JWTService jwtService) {
         this.complaintRepository = complaintRepository;
         this.userDataRepository = userDataRepository;
         this.complaintMapper = complaintMapper;
         this.userRepository = userRepository;
+        this.friendsRepository = friendsRepository;
+        this.jwtService = jwtService;
     }
 
 
@@ -52,13 +60,26 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     @Transactional
-    public void save(ComplaintCreateDTO complaintDTO) {
+    public void create(HttpServletRequest request,ComplaintCreateDTO complaintDTO) {
+        String login = jwtService.getLogin(request);
+        UserData sender = userDataRepository.findById(login).orElseThrow(()-> new NoSuchElementException("Complaint`s sender not found"));
+        UserData recipient = userDataRepository.findById(complaintDTO.getVictim()).orElseThrow(()-> new NoSuchElementException("Complaint`s victim not found"));
+
         Complaint complaint = new Complaint();
-        complaint.setSender(userDataRepository.findById(complaintDTO.getSender()).orElseThrow(()-> new NoSuchElementException("Complaint`s sender not found")));
-        complaint.setVictim(userDataRepository.findById(complaintDTO.getVictim()).orElseThrow(()-> new NoSuchElementException("Complaint`s victim not found")));
+        complaint.setSender(sender);
+        complaint.setVictim(recipient);
         complaint.setText(complaintDTO.getText());
         complaint.setDate(new Date());
         complaint.setTime(new Date());
+        complaintRepository.save(complaint);
+
+
+        Friends friends = new Friends();
+        friends.setFriend1(sender);
+        friends.setFriend2(recipient);
+        friends.setStatus(FriendsStatus.lock);
+        friendsRepository.save(friends);
+
     }
 
     @Override
