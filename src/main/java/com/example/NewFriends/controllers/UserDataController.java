@@ -27,9 +27,26 @@ public class UserDataController {
 
     @GetMapping
     public ResponseEntity<UserDataDTO> findAll(HttpServletRequest request) {
-        return ResponseEntity
-                .ok(userDataService.findUser(request));
+        return ResponseEntity.ok(userDataService.findUser(request));
     }
+
+    @PatchMapping("/send/{login}")
+    public ResponseEntity<UserDataDTO> sendFriendRequest(@PathVariable String login, HttpServletRequest request){
+        userDataService.addNewFriend(request, login);
+        return ResponseEntity.ok(userDataService.findUser(request));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @GetMapping("/{login}")
@@ -52,5 +69,7 @@ public class UserDataController {
     public ResponseEntity<List<UserDataDTO>> findByCategory(@RequestBody CategoryDTO dto){
         return ResponseEntity.ok(userDataService.findByCategory(dto));
     }
+
+
 
 }

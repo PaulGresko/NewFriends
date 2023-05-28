@@ -7,6 +7,7 @@ import com.example.NewFriends.dto.userData.UserDataDTO;
 import com.example.NewFriends.entity.LastFind;
 import com.example.NewFriends.entity.User;
 import com.example.NewFriends.entity.UserData;
+import com.example.NewFriends.repositories.FriendsRepository;
 import com.example.NewFriends.repositories.LastFindRepository;
 import com.example.NewFriends.repositories.UserDataRepository;
 import com.example.NewFriends.repositories.UserRepository;
@@ -30,14 +31,16 @@ public class UserDataServiceImpl implements UserDataService {
 
     private final UserDataRepository userDataRepository;
     private final UserDataMapper userDataMapper;
+    private final FriendsRepository friendsRepository;
     private final JWTService jwtService;
     private final UserRepository userRepository;
     private final LastFindRepository lastFindRepository;
     @Autowired
-    public UserDataServiceImpl(UserDataRepository userDataRepository, UserRepository userRepository, UserDataMapper userDataMapper, JWTService jwtService, LastFindRepository lastFindRepository) {
+    public UserDataServiceImpl(UserDataRepository userDataRepository, UserRepository userRepository, UserDataMapper userDataMapper, FriendsRepository friendsRepository, JWTService jwtService, LastFindRepository lastFindRepository) {
         this.userDataRepository = userDataRepository;
         this.userRepository = userRepository;
         this.userDataMapper = userDataMapper;
+        this.friendsRepository = friendsRepository;
         this.jwtService = jwtService;
         this.lastFindRepository = lastFindRepository;
     }
@@ -52,6 +55,13 @@ public class UserDataServiceImpl implements UserDataService {
 
 
         return userDataMapper.toDto(userData);
+    }
+
+    @Override
+    @Transactional
+    public void addNewFriend(HttpServletRequest request, String login) {
+        String username = jwtService.getLogin(request);
+        friendsRepository.insertNewFriend(username, login);
     }
 
     @Override
@@ -151,5 +161,7 @@ public class UserDataServiceImpl implements UserDataService {
         userDataRepository.deleteById(login);
         return "User was successful deleted!";
     }
+
+
 
 }

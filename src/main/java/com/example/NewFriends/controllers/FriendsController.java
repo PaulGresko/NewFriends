@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/friends")
@@ -40,7 +41,8 @@ public class FriendsController {
     }
 
     @PatchMapping("/invites/{id}")
-    public ResponseEntity<FriendsDTO> takeRequests(@PathVariable String id){
-        return null;
+    public ResponseEntity<Map<String,String>> takeRequests(@PathVariable String id){
+        friendsService.acceptRequest(Integer.valueOf(id));
+        return ResponseEntity.ok(Map.of("Message", "Request accepted"));
     }
 }

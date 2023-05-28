@@ -68,4 +68,5 @@ public interface UserDataRepository extends JpaRepository<UserData, String> {
             "    );",
     nativeQuery = true)
     List<UserData> findAllRequests(String user);
+
 }

@@ -23,6 +23,14 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             "    order by date desc , time desc;",nativeQuery = true)
     List<Object[]> findAllChats(String user);
 
+    @Query(value = "select login, name, image from user_data where\n" +
+            "    (login in( select friend2 from friends where friend1 = :user and status = 'friends')\n" +
+            "    or login in ( select friend1 from friends where friend2 = :user and status = 'friends'))\n" +
+            "    and login not in ( select sender from message where recipient = :user )\n" +
+            "    and login not in ( select recipient from message where sender = :user \n" +
+            "    );",
+    nativeQuery = true)
+    List<Object[]> findAllEmptyChats(String user);
 
     @Query(value = "select * from message where\n" +
             "        (recipient = :user1 and sender = :user2)\n" +

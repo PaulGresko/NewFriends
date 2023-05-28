@@ -2,6 +2,7 @@ package com.example.NewFriends.controllers;
 
 
 import com.example.NewFriends.dto.Message.ChatDTO;
+import com.example.NewFriends.dto.Message.EmptyChatDTO;
 import com.example.NewFriends.dto.Message.MessageCreateDTO;
 import com.example.NewFriends.dto.Message.MessageDTO;
 import com.example.NewFriends.services.MessageService;
@@ -26,6 +27,12 @@ public class Messenger {
     public ResponseEntity<List<ChatDTO>> getAllChats(HttpServletRequest request){
         return ResponseEntity.ok(messageService.findAllChats(request));
     }
+
+    @GetMapping("/empty")
+    public ResponseEntity<List<EmptyChatDTO>> getAllEmptyChats(HttpServletRequest request){
+        return ResponseEntity.ok(messageService.findAllEmptyChats(request));
+    }
+
     @GetMapping("/{login}")
     public ResponseEntity<List<MessageDTO>> getAllMessages(HttpServletRequest request, @PathVariable String login){
         return ResponseEntity.ok(messageService.findAllMessages(request, login));

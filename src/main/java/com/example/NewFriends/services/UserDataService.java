@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface UserDataService {
     UserDataDTO findUser(HttpServletRequest request);
-
+    void addNewFriend(HttpServletRequest request, String login);
     UserDataDTO findMyData(HttpServletRequest request);
     UserDataDTO findByLogin(String login);
     List<UserDataDTO> findByCategory(CategoryDTO categoryDTO);

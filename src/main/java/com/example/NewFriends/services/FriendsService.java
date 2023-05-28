@@ -18,6 +18,8 @@ public interface FriendsService {
     List<UserDataDTO> findAllInvites(HttpServletRequest request);
     List<UserDataDTO> findAllRequests(HttpServletRequest request);
     FriendsDTO friendRequest(HttpServletRequest request, String login);
+
+    void acceptRequest(Integer id);
     FriendsDTO update(Long id, FriendsCreateDTO friendsDTO);
     String delete(Long id);
 }

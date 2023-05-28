@@ -14,6 +14,7 @@ import com.example.NewFriends.util.enums.FriendsStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -71,6 +72,12 @@ public class FriendsServiceImpl implements FriendsService {
         friends.setStatus(FriendsStatus.waiting);
 
         return friendsMapper.toDto(friendsRepository.save(friends));
+    }
+
+    @Override
+    @Transactional
+    public void acceptRequest(Integer id) {
+        friendsRepository.acceptRequestFriend(id);
     }
 
     @Override

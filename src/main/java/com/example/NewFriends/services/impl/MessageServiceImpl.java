@@ -1,6 +1,7 @@
 package com.example.NewFriends.services.impl;
 
 import com.example.NewFriends.dto.Message.ChatDTO;
+import com.example.NewFriends.dto.Message.EmptyChatDTO;
 import com.example.NewFriends.dto.Message.MessageCreateDTO;
 import com.example.NewFriends.dto.Message.MessageDTO;
 import com.example.NewFriends.entity.Message;
@@ -9,6 +10,7 @@ import com.example.NewFriends.repositories.UserDataRepository;
 import com.example.NewFriends.security.JWTService;
 import com.example.NewFriends.services.MessageService;
 import com.example.NewFriends.services.mapper.ChatMapper;
+import com.example.NewFriends.services.mapper.EmptyChatMapper;
 import com.example.NewFriends.services.mapper.MessageMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +29,27 @@ public class MessageServiceImpl implements MessageService {
     private final UserDataRepository userDataRepository;
     private final MessageMapper messageMapper;
     private final ChatMapper chatMapper;
+    private final EmptyChatMapper emptyChatMapper;
     private final JWTService jwtService;
     @Autowired
-    public MessageServiceImpl(MessageRepository messageRepository, MessageMapper messageMapper, UserDataRepository userDataRepository, ChatMapper chatMapper, JWTService jwtService) {
+    public MessageServiceImpl(MessageRepository messageRepository,
+                              MessageMapper messageMapper,
+                              UserDataRepository userDataRepository,
+                              ChatMapper chatMapper,
+                              EmptyChatMapper emptyChatMapper,
+                              JWTService jwtService) {
         this.messageRepository = messageRepository;
         this.messageMapper = messageMapper;
         this.userDataRepository = userDataRepository;
         this.chatMapper = chatMapper;
+        this.emptyChatMapper = emptyChatMapper;
         this.jwtService = jwtService;
+    }
+
+    @Override
+    public List<EmptyChatDTO> findAllEmptyChats(HttpServletRequest request) {
+        String username = jwtService.getLogin(request);
+        return emptyChatMapper.toDtoList(messageRepository.findAllEmptyChats(username));
     }
 
     @Override
