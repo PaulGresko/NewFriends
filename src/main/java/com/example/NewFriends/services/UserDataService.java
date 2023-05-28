@@ -14,7 +14,7 @@ import java.util.List;
 
 
 public interface UserDataService {
-    List<UserDataDTO> findAll(HttpServletRequest request);
+    UserDataDTO findUser(HttpServletRequest request);
 
     UserDataDTO findMyData(HttpServletRequest request);
     UserDataDTO findByLogin(String login);

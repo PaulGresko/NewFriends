@@ -18,9 +18,21 @@ public interface UserDataRepository extends JpaRepository<UserData, String> {
     Optional<UserData> findMyData(String username);
 
 
-    @Query(value = "select u.* from user_data u left join user u2 on u.login = u2.login where u2.status = 'ROLE_USER' and u2.login <> :username"
+    @Query(value = "select u.* from user_data u left join user u2 on u.login = u2.login\n" +
+            "           where u2.status = 'ROLE_USER'\n" +
+            "            and u2.login <> :username\n" +
+            "            and u.login not in(\n" +
+            "                select login from (\n" +
+            "                    select friend2 as login from friends where friend1 = :username\n" +
+            "                ) a union (\n" +
+            "                    select friend1 as login from friends where friend2 = :username\n" +
+            "                )\n" +
+            "            ) and u.login not in (\n" +
+            "                select last_found_user from last_find\n" +
+            "                        where last_find.login = :username\n" +
+            "            ) ORDER BY RAND() LIMIT 1;"
             , nativeQuery = true)
-    List<UserData> findDefaultUsers(String username);
+    UserData findDefaultUser(String username);
 
     @Query(value = "select user_data.login, name, description, sex, image, birthday, city, zodiac_sign from user_data LEFT JOIN user on user_data.login = user.login where status ='ROLE_WAITING'", nativeQuery = true)
     List<UserData> findUnverifiedUsers();

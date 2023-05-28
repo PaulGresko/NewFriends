@@ -79,12 +79,8 @@ public class UserData {
     private List<Friends> friends2 = new ArrayList<>();
 
 
-    @Transient
-    public List<Friends> getAllFriends() {
-        List<Friends> allFriends = new ArrayList<>(friends1);
-        allFriends.addAll(friends2);
-        return allFriends;
-    }
-
+//    @ToString.Exclude
+//    @OneToOne(mappedBy = "login")
+//    private LastFind lastFind;
 
 }

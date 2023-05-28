@@ -51,3 +51,7 @@ create table token(
     user varchar(255),
     FOREIGN KEY (user) REFERENCES user(login) ON DELETE CASCADE ON UPDATE CASCADE
 );
+create table last_find(
+    login varchar(255) PRIMARY KEY,
+    last_found_user varchar(255)
+)

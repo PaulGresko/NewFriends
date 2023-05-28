@@ -10,8 +10,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
-    @Query(value = "update user set status = 'ROLE_WAITING' where login = :login;",nativeQuery = true)
-    @Modifying
-    void updateUserStatusToWaiting(String login);
-
 }

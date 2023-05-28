@@ -26,8 +26,9 @@ public class UserDataController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDataDTO>> findAll(HttpServletRequest request) {
-        return ResponseEntity.ok(userDataService.findAll(request));
+    public ResponseEntity<UserDataDTO> findAll(HttpServletRequest request) {
+        return ResponseEntity
+                .ok(userDataService.findUser(request));
     }
 
 

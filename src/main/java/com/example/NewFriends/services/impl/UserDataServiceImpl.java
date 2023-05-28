@@ -4,8 +4,10 @@ package com.example.NewFriends.services.impl;
 import com.example.NewFriends.dto.userData.CategoryDTO;
 import com.example.NewFriends.dto.userData.UserDataCreateDTO;
 import com.example.NewFriends.dto.userData.UserDataDTO;
+import com.example.NewFriends.entity.LastFind;
 import com.example.NewFriends.entity.User;
 import com.example.NewFriends.entity.UserData;
+import com.example.NewFriends.repositories.LastFindRepository;
 import com.example.NewFriends.repositories.UserDataRepository;
 import com.example.NewFriends.repositories.UserRepository;
 import com.example.NewFriends.security.JWTService;
@@ -17,9 +19,8 @@ import com.example.NewFriends.util.enums.ZodiacSign;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,20 +32,26 @@ public class UserDataServiceImpl implements UserDataService {
     private final UserDataMapper userDataMapper;
     private final JWTService jwtService;
     private final UserRepository userRepository;
-
+    private final LastFindRepository lastFindRepository;
     @Autowired
-    public UserDataServiceImpl(UserDataRepository userDataRepository, UserRepository userRepository, UserDataMapper userDataMapper, JWTService jwtService) {
+    public UserDataServiceImpl(UserDataRepository userDataRepository, UserRepository userRepository, UserDataMapper userDataMapper, JWTService jwtService, LastFindRepository lastFindRepository) {
         this.userDataRepository = userDataRepository;
         this.userRepository = userRepository;
         this.userDataMapper = userDataMapper;
         this.jwtService = jwtService;
+        this.lastFindRepository = lastFindRepository;
     }
 
 
     @Override
-    public List<UserDataDTO> findAll(HttpServletRequest request) {
+    @Transactional
+    public UserDataDTO findUser(HttpServletRequest request) {
         String username = jwtService.getLogin(request);
-        return userDataMapper.toDtoList(userDataRepository.findDefaultUsers(username));
+        UserData userData = userDataRepository.findDefaultUser(username);
+        lastFindRepository.updateLastFoundUser(username, userData.getLogin());
+
+
+        return userDataMapper.toDto(userData);
     }
 
     @Override
@@ -83,6 +90,7 @@ public class UserDataServiceImpl implements UserDataService {
     }
 
     @Override
+    @Transactional
     public UserDataDTO save(HttpServletRequest request, UserDataCreateDTO dto) {
         String login = jwtService.getLogin(request);
 
@@ -102,26 +110,35 @@ public class UserDataServiceImpl implements UserDataService {
         User user1 = userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User not found"));
         user1.setStatus(Status.ROLE_WAITING);
         userRepository.save(user1);
+
+
+
+        LastFind lastFind = new LastFind();
+        lastFind.setLogin(user.getLogin());
+        lastFind.setLastFindUser(user.getLogin());
+        lastFindRepository.saveAndFlush(lastFind);
         return  userDataMapper.toDto(user);
     }
 
     @Override
     public UserDataDTO update(HttpServletRequest request, UserDataCreateDTO dto) {
-//        String login = jwtService.getLogin(request);
-//        UserData userData = UserData.builder()
-//                .user(userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User not found")))
-//                .birthday(dto.getBirthday())
-//                .name(dto.getName())
-//                .city(dto.getCity())
-//                .image(dto.getImage())
-//                .description(dto.getDescription())
-//                .sex(Sex.valueOf(dto.getSex()))
-//                .zodiacSign(ZodiacSign.getZodiacSign(dto.getBirthday()))
-//                .login(login)
-//                .build();
+        String login = jwtService.getLogin(request);
 
-//        return userDataMapper.toDto(userDataRepository.save(userData));
-  return null;
+        UserData userData = new UserData();
+        userData.setLogin(login);
+        userData.setName(dto.getName());
+        userData.setBirthday(dto.getBirthday());
+        userData.setImage(dto.getImage());
+        userData.setCity(dto.getCity());
+        userData.setDescription(dto.getDescription());
+        userData.setZodiacSign(ZodiacSign.getZodiacSign(dto.getBirthday()));
+        userData.setSex(Sex.valueOf(dto.getSex()));
+        UserData user = userDataRepository.save(userData);
+
+        User user1 = userRepository.findById(login).orElseThrow(()->new NoSuchElementException("User not found"));
+        user1.setStatus(Status.ROLE_WAITING);
+        userRepository.save(user1);
+        return  userDataMapper.toDto(user);
     }
 
     @Override
