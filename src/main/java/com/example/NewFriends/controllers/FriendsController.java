@@ -46,10 +46,9 @@ public class FriendsController {
         return ResponseEntity.ok(Map.of("Message", "Request accepted"));
     }
 
-    @PatchMapping("/invites/lock/{login}")
+    @PatchMapping("/invites/cancel/{login}")
     public ResponseEntity<Map<String,String>> cancelRequest(@PathVariable String login, HttpServletRequest request){
-
-
+        friendsService.cancelRequest(request,login);
         return ResponseEntity.ok(Map.of("Message", "Request accepted"));
     }
 
