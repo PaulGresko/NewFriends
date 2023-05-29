@@ -49,7 +49,7 @@ public class FriendsController {
     @PatchMapping("/invites/cancel/{login}")
     public ResponseEntity<Map<String,String>> cancelRequest(@PathVariable String login, HttpServletRequest request){
         friendsService.cancelRequest(request,login);
-        return ResponseEntity.ok(Map.of("Message", "Request accepted"));
+        return ResponseEntity.ok(Map.of("Message", "Request canceled"));
     }
 
 }

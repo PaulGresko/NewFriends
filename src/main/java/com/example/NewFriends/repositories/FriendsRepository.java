@@ -19,13 +19,13 @@ public interface FriendsRepository extends JpaRepository<Friends, Long> {
 
     @Modifying
     @Query(value = "update friends set status = 'friends'\n" +
-            "    where friend1 = :login1 and friend2 = :login2",
+            "    where friend1 = :login2 and friend2 = :login1",
             nativeQuery = true)
     void acceptRequestFriend(String login1, String login2);
 
     @Modifying
     @Query(value = "update friends set status = 'lock'\n" +
-            "    where friend1 = :login1 and friend2 = :login2",
+            "    where friend1 = :login2 and friend2 = :login1",
         nativeQuery = true)
     void cancelRequestFriend(String login1, String login2);
 }
