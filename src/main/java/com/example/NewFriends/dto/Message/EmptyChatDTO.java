@@ -10,7 +10,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class EmptyChatDTO {
-    String login;
-    String name;
+    String companion;
+    String companionName;
     byte[] image;
 }
