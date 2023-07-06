@@ -18,15 +18,4 @@ public class ControllerAdvice {
     public ResponseEntity<Exception> handleException(NoSuchElementException e) {
         return new ResponseEntity<>(new Exception(e.getMessage()), HttpStatus.NOT_FOUND);
     }
-
-//    @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public ResponseEntity<Exception> globalHandleException(HttpServerErrorException.InternalServerError e) {
-//        return new ResponseEntity<>(new Exception(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
-//    @ResponseStatus(HttpStatus.FORBIDDEN)
-//    public ResponseEntity<Exception> ForbiddenHandleException(HttpClientErrorException.Forbidden e) {
-//        return new ResponseEntity<>(new Exception(e.getMessage()), HttpStatus.FORBIDDEN);
-//    }
 }
