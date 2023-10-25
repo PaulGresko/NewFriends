@@ -6,13 +6,7 @@
 2) Администратор: может подверждать новые или измененные аккаунты и блокировать пользователей, на которых поступили жалобы или же отменять их.
    
 ## Используемый стэк:
-Backend: Spring Boot, Spring MVC, Spring Data, Spring Secuity.     
+Backend: Java, Spring Boot, Spring MVC, Spring Data, Spring Secuity.     
 База данных: MySQL.       
 Взаимодействие между backend и frontend осуществляется посредством JSON, REST.       
 
-## Описание API
-Для описания API используются Swagger.
-
-Для просмотра описания api необходимо запустить приложение и перейти по ссылке:
-
-http://localhost:9090/swagger-ui/#/
